@@ -4,9 +4,15 @@
 
 GapCaster drafts an audio-description (AD) track for a finished video. It finds the silences between lines of dialogue, writes narration sized for each one, speaks it, measures it, and speeds it up slightly or rewrites it until it fits. Every line comes with the evidence behind it, and a human describer approves the result. Everything runs locally on open models.
 
-![GapCaster review page: KPIs and timeline](docs/review_top.png)
+**Finalist — ASUS UGen AI League 2026** · Creator AI · Battlefield Thunderstorm.
 
-Built for the **ASUS UGen AI League 2026** · Theme: Creator AI · Battlefield Thunderstorm. The Stage I prototype runs on a laptop; the Stage II target is one **ASUS UGen Intel Arc Pro B70 (32 GB)**. Built by Ted Chen with AI coding assistance (Claude, Anthropic).
+**Start here:** [Watch the described sample](samples/tears-of-steel-0-140/clip_with_ad.mp4) · [Read the script](samples/tears-of-steel-0-140/ad_script.txt) · [Run locally](#quick-start) · [Measurement limits](#results-stage-i-laptop-prototype)
+
+**Status:** working laptop prototype. The published results below are in-sample measurements on an Apple M5 Max; they are not B70 results. Stage II targets one **ASUS UGen Intel Arc Pro B70 (32 GB)**, with hardware measurements and held-out-film evaluation still ahead. You can inspect the [sample outputs](samples/tears-of-steel-0-140) without downloading models.
+
+![GapCaster review page: narration timing, evidence and human approval](docs/review_top.png)
+
+Built by Ted Chen with AI coding assistance (Claude, Anthropic).
 
 ## Results (Stage I, laptop prototype)
 
@@ -71,6 +77,8 @@ And the style gate at work in the full film (`AD001`): *A caption: Blender Found
 Requirements: an Apple Silicon Mac with at least 48 GB of unified memory (64 GB recommended; peak use is about 34 GB), about 35 GB of free disk (the first run downloads about 31 GB of models), Python 3.11–3.13, [uv](https://docs.astral.sh/uv/) and `ffmpeg` on PATH. You can inspect the sample outputs without any models: open `samples/tears-of-steel-0-140/review.html`.
 
 ```bash
+git clone https://github.com/tedinroc/gapcaster.git
+cd gapcaster
 uv venv --python 3.11 && source .venv/bin/activate
 uv pip install -e ".[mac]"
 

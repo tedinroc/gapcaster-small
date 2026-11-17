@@ -13,7 +13,8 @@ GapCaster Small drafts an audio-description (AD) track for a finished video. It 
 | Default vision-language model | Qwen3.8-27B, 8-bit | **Qwen3-VL-8B-Instruct, 8-bit** (27B kept only as an optional quality reference) |
 | Largest model core to the pipeline | 27B | **8B** |
 | Narration languages | English | English and **Mandarin (Traditional Chinese text, `--lang zh`)** |
-| Peak memory on the 2:20 test clip | 33.2 GB | **13.7 GB** (English, 8B) |
+| Describer interface | Static `review.html` + CLI export | **Local Web Studio (`gapcaster web`, `127.0.0.1`)** with one-click browser export + static `review.html` |
+| Peak memory on the 2:20 test clip | 33.2 GB | **13.7 GB** (English, 8B) · **13.8 GB** (Mandarin, 8B) |
 
 ## Results on small models (laptop, in-sample)
 
@@ -23,7 +24,7 @@ Measured on an Apple M5 Max laptop on *Tears of Steel* 0:00–2:20 (Blender Foun
 |---|---:|---:|---:|
 | Lines that fit their silence | 17/17 | 19/19 | 15/15 |
 | Narration over detected speech | 0.0 s | 0.0 s | 0.0 s |
-| Narration over official subtitle cues | 0.4 s | not measured | 0.4 s |
+| Narration over official subtitle cues | 0.4 s | 0.6 s | 0.4 s |
 | Verifier: obvious planted errors flagged | 17/17 | 18/19 | 13/15 |
 | Verifier: subtle in-film errors flagged | 15/17 | 13/19 (verb swaps 0/5) | 11/15 (character and neighbour swaps only) |
 | Verifier flags on unmodified lines | 1/17 | 2/19 | 1/15 |
@@ -52,7 +53,7 @@ gapcaster run tears_of_steel_720p.mov --out runs/zh --cast configs/cast_tears_of
 
 
 
-**Start here:** [Watch the English sample](samples/tears-of-steel-0-140/clip_with_ad.mp4) · [Mandarin sample](samples/tears-of-steel-0-140-zh/) · [Listening pilot for blind and low-vision listeners](https://tedinroc.github.io/gapcaster/pilot/) · [Run locally](#quick-start)
+**Start here:** [Project page](https://tedinroc.github.io/gapcaster-small/) · [Watch the 8B English sample](samples/tears-of-steel-0-140-8b/clip_with_ad.mp4) · [Mandarin sample](samples/tears-of-steel-0-140-zh/) · [Listening pilot for blind and low-vision listeners](https://tedinroc.github.io/gapcaster/pilot/) · [Run locally](#quick-start)
 
 Built by Ted Chen with AI coding assistance (Claude, Anthropic).
 
@@ -99,20 +100,23 @@ Requirements: an Apple Silicon Mac with at least 24 GB of unified memory for the
 git clone https://github.com/tedinroc/gapcaster-small.git
 cd gapcaster-small
 uv venv --python 3.11 && source .venv/bin/activate
-uv pip install -e ".[mac]"   # add opencc-python-reimplemented "misaki[zh]" for --lang zh
+uv pip install -e ".[mac,zh]"
 
-# the demo film and its official subtitles (subtitles are used only for evaluation)
+# launch the local-only Describer Web Studio (inspect bundled EN + zh samples immediately, no models needed):
+gapcaster web --open
+
+# or run from the command line on the demo film:
 curl -LO https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov
 curl -LO https://download.blender.org/demo/movies/ToS/subtitles/TOS-en.srt
 
 gapcaster run tears_of_steel_720p.mov --out runs/demo --cast configs/cast_tears_of_steel.yaml \
   --start 0 --end 140 --ref-srt TOS-en.srt --inject 20
 open runs/demo/review.html
-# after reviewing, download approved.json from the page, then:
+# after reviewing, export directly in `gapcaster web`, or download approved.json and run:
 gapcaster export runs/demo --approved approved.json
 ```
 
-Each stage can switch runtime. For an Intel Arc Pro B70 on Linux, install the XPU build of PyTorch first so Kokoro can use the card:
+Each stage can switch runtime. For an Intel GPU on Linux, install the XPU build of PyTorch first so Kokoro can use the card:
 
 ```bash
 uv pip install torch --index-url https://download.pytorch.org/whl/xpu
@@ -168,19 +172,19 @@ The orchestrator does not depend on Apple Silicon: the vision-language model can
 
 ```
 gapcaster/      pipeline: media, scenes, gapmap (Whisper MLX/OpenVINO + VAD), llm (MLX + OpenAI
-                backends), tts (MLX/PyTorch), prompts, styleguard, inject, pipeline, export,
-                review, approve, cli
+                backends), tts (MLX/PyTorch), lang, prompts, styleguard, inject, pipeline,
+                export, review, approve, web (local Describer Studio), cli
 eval/           parity check for the portable speech path; local OpenAI-compatible test server;
                 AI-assisted frame check
-configs/        cast sheet for the demo film
-samples/        outputs of the 140-second demo run; full-film script and metrics;
-                portable-path metrics
-tests/          unit tests (pytest)
+configs/        cast sheets for the demo film (English and Mandarin)
+samples/        outputs of the 140-second demo runs (8B English, 8B Mandarin, 27B reference);
+                full-film script and metrics; portable-path metrics
+tests/          unit and HTTP studio tests (pytest)
 ```
 
 ## Credits and licences
 
-- Code: MIT, © 2026 Ted Chen. Developed with AI coding assistance (Claude, Anthropic).
-- Demo footage and frames: *Tears of Steel* © Blender Foundation | mango.blender.org, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). `samples/tears-of-steel-0-140/clip_with_ad.mp4` is an excerpt (0:00–2:20) with GapCaster's synthetic description track mixed in; it is a modified work and is not endorsed by the Blender Foundation. Score by Joram Letwory (www.tearsofsteel.org), heard as part of the CC BY 3.0 film; the separately released soundtrack files are CC BY-ND 3.0 and are not used. Official subtitles are used only for evaluation.
-- Models: Qwen3.8-27B (Apache-2.0), Whisper large-v3-turbo (MIT), Silero VAD (MIT), Kokoro-82M (Apache-2.0). Voices are synthetic stock voices; no voice cloning.
+- Code: MIT, © 2026 Ted Chen. Developed with AI coding assistance (Claude, Anthropic; Gemini, Google).
+- Demo footage and frames: *Tears of Steel* © Blender Foundation | mango.blender.org, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). `samples/tears-of-steel-0-140*/clip_with_ad.mp4` are excerpts (0:00–2:20) with GapCaster's synthetic description track mixed in; they are modified works and are not endorsed by the Blender Foundation. Score by Joram Letwory (www.tearsofsteel.org), heard as part of the CC BY 3.0 film; the separately released soundtrack files are CC BY-ND 3.0 and are not used. Official subtitles are used only for evaluation.
+- Models: Qwen3-VL-8B-Instruct (Apache-2.0; default), Whisper large-v3-turbo (MIT), Silero VAD (MIT), Kokoro-82M (Apache-2.0), optional reference Qwen3.8-27B (Apache-2.0). Voices are synthetic stock voices; no voice cloning.
 - Libraries include MLX, mlx-vlm, mlx-audio, OpenVINO GenAI, PyTorch (BSD-3-Clause), PySceneDetect and spaCy. Kokoro's English G2P falls back to espeak-ng (GPL-3.0) for out-of-vocabulary words; the library comes in the espeakng-loader wheel that misaki[en] installs, is loaded at runtime, and is not redistributed by this repo. ffmpeg is called as a subprocess.

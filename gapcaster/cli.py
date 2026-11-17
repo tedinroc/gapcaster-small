@@ -30,6 +30,11 @@ def main():
     x.add_argument("run_dir")
     x.add_argument("--approved", required=True)
     x.add_argument("--tts", default=None, choices=["mlx", "kokoro"], help="TTS runtime for edited lines (default: the run's own)")
+    w = sub.add_parser("web", help="launch the local-only Describer Web Studio (127.0.0.1)")
+    w.add_argument("--host", default="127.0.0.1", help="bind address (default: 127.0.0.1 for local privacy)")
+    w.add_argument("--port", type=int, default=7860)
+    w.add_argument("--runs-dir", default="runs")
+    w.add_argument("--open", action="store_true", help="open the studio in the default browser")
     a = ap.parse_args()
     if a.cmd == "run":
         from .pipeline import run
@@ -43,6 +48,9 @@ def main():
     elif a.cmd == "export":
         from .approve import apply
         print(json.dumps(apply(a.run_dir, a.approved, tts_backend=a.tts), indent=1))
+    elif a.cmd == "web":
+        from .web import serve
+        serve(host=a.host, port=a.port, runs_dir=a.runs_dir, open_browser=a.open)
     else:
         from .review import build
         print(build(a.run_dir))

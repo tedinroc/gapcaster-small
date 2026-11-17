@@ -323,8 +323,8 @@
     "set": "easy",
     "kind": "append/swap",
     "line": "AD012",
-    "original": "Sniper\u2019s focus tightens through rifle scope.",
-    "corrupted": "Sniper\u2019s focus tightens through rifle scope as rain falls.",
+    "original": "Sniper’s focus tightens through rifle scope.",
+    "corrupted": "Sniper’s focus tightens through rifle scope as rain falls.",
     "caught": true,
     "verdict_missing": false,
     "unsupported": [
@@ -335,7 +335,7 @@
     "set": "hard",
     "kind": "neighbour",
     "line": "AD012",
-    "original": "Sniper\u2019s focus tightens through rifle scope.",
+    "original": "Sniper’s focus tightens through rifle scope.",
     "corrupted": "Sniper aims rifle at motionless older man.",
     "caught": true,
     "verdict_missing": false,
@@ -539,5 +539,7 @@
   "planted": 19,
   "caught": 18,
   "catch_rate": 0.95
- }
+ },
+ "reference_dialogue_cues": 14,
+ "ad_overlap_with_reference_subtitles_s": 0.59
 }

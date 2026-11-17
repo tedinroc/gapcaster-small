@@ -15,7 +15,8 @@ from .lang import for_tts
 from .tts import TTS
 
 
-def apply(run_dir, approved_path, settings: Settings | None = None, tts_backend: str | None = None):
+def apply(run_dir, approved_path, settings: Settings | None = None, tts_backend: str | None = None,
+          out_dir: str | Path | None = None):
     run = Path(run_dir)
     doc = json.loads((run / "script.json").read_text())
     rec = doc.get("settings", {})
@@ -53,22 +54,27 @@ def apply(run_dir, approved_path, settings: Settings | None = None, tts_backend:
                 report.append({"id": r["id"], "status": "edited", "kept": False,
                                "reason": f"edited line is {dur:.1f}s, silence is {r['avail']:.1f}s"})
                 continue
-            p = run / "lines" / f"{r['id']}_edited.wav"
+            p = (Path(out_dir) / "lines" if out_dir else run / "lines") / f"{r['id']}_edited.wav"
+            p.parent.mkdir(parents=True, exist_ok=True)
             sf.write(p, fit[0], tts.sr)
-            line.update(text=text, duration=round(fit[1], 2), speed=fit[2], audio=str(p.relative_to(run)))
+            line.update(text=text, duration=round(fit[1], 2), speed=fit[2],
+                        audio=str(p) if out_dir else str(p.relative_to(run)))
         kept.append(line)
         report.append({"id": r["id"], "status": status, "kept": True})
     total = doc["metrics"]["clip_seconds"]
     sr = 24000
     track = np.zeros(int(total * sr) + sr, dtype=np.float32)
     for r in kept:
-        a, _ = sf.read(run / r["audio"], dtype="float32")
+        ap = Path(r["audio"]) if Path(r["audio"]).is_absolute() else (run / r["audio"])
+        a, _ = sf.read(ap, dtype="float32")
         i = int(r["start"] * sr)
         track[i:i + len(a)] += a[: len(track) - i]
-    out = run / "approved"
-    out.mkdir(exist_ok=True)
+    out = Path(out_dir) if out_dir else (run / "approved")
+    out.mkdir(parents=True, exist_ok=True)
     sf.write(out / "ad_track.wav", track, sr)
-    media.mux_mix(run / "clip.mp4", out / "ad_track.wav", out / "clip_with_ad.mp4")
+    if (run / "clip.mp4").exists():
+        media.mux_mix(run / "clip.mp4", out / "ad_track.wav", out / "clip_with_ad.mp4")
     export.write_all({"lines": kept}, out)
     (out / "report.json").write_text(json.dumps(report, indent=1))
-    return {"kept": len(kept), "dropped": len(report) - len(kept), "out": str(out)}
+    return {"kept": len(kept), "dropped": len(report) - len(kept), "out": str(out),
+            "video_mixed": (out / "clip_with_ad.mp4").exists()}

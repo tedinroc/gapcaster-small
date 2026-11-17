@@ -2086,6 +2086,8 @@
    "planted": 19,
    "caught": 18,
    "catch_rate": 0.95
-  }
+  },
+  "reference_dialogue_cues": 14,
+  "ad_overlap_with_reference_subtitles_s": 0.59
  }
 }

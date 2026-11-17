@@ -9,23 +9,32 @@ import numpy as np
 import soundfile as sf
 import yaml
 
-from . import gapmap, llm, media, prompts, scenes, styleguard
+from . import gapmap, lang as L, llm, media, prompts, scenes, styleguard
 from .config import Settings
 from .tts import TTS
 
 
 CREDITS = re.compile(r"\b(?:supported by|film fund|foundation presents|copyright|produced by|directed by|music by|"
-                     r"screenplay by|written by|render farm|end credits|credits)\b|\bpresents\.?$|©|www\.|\.(?:org|com)\b", re.I)
+                     r"screenplay by|written by|render farm|end credits|credits)\b|\bpresents\.?$|©|www\.|\.(?:org|com)\b"
+                     r"|出品|贊助|赞助|製作人|监制|監製|導演|导演|編劇|编剧|版權|版权|演職員|演职员|基金|支援本片|支持本片|呈獻|呈献|鳴謝|鸣谢", re.I)
 
 
-def clean(reply: str) -> str:
+# Mandarin caption readings ("字幕：…", "標題：…"); used to catch captions read when no text is on screen
+CAPTION_LINE = re.compile(r"^(字幕|標題|招牌|告示|字卡|頭條|畫面文字)(顯示)?[:：「]")
+NO_TEXT_NOTE = {"zh": "這段畫面沒有新的文字，不要唸字幕或標題，描述看得到的人物與動作。",
+                "en": "There is no new on-screen text here; describe the visible action, do not read a caption."}
+
+
+def clean(reply: str, lang: str = "en") -> str:
     """Normalise a model reply to one line of narration; '' when it is unusable (empty, SKIP, reasoning only)."""
     t = reply.rsplit("</think>", 1)[-1] if "</think>" in reply else reply
     if "<think>" in t:
         return ""
-    t = t.strip().strip('"').strip()
-    if not t or re.fullmatch(r"skip\W*", t, re.I) or not re.search(r"[A-Za-z]{2,}", t):
+    t = t.strip().strip('"').strip("「」").strip()
+    if not t or re.fullmatch(r"skip\W*", t, re.I) or not L.has_content(t, lang):
         return ""
+    if lang == "zh":
+        t = L.to_traditional(t.splitlines()[0].strip())
     return t
 
 
@@ -165,7 +174,7 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
             avail = slot["end"] - begin
             if avail < s.min_slot or not slot["shots"]:
                 continue
-            budget = max(3, min(18, math.floor(avail * s.words_per_sec)))
+            budget = L.budget(avail, s)
             facts = facts_text(by_id, slot["shots"])
             unread = []
             for i in slot.get("prev", []) + slot["shots"]:
@@ -173,27 +182,41 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
                 if len(t) >= 3 and t.lower() not in read_text and not CREDITS.search(t):
                     unread.append(t[:90])
                     read_text.add(t.lower())
-            text_note = ("On-screen text not read yet (read the story-relevant part, e.g. a headline): "
-                         + " | ".join(f'"{u}"' for u in unread)) if unread else ""
-            text = clean(model.chat(prompts.WRITE.format(text_note=text_note,
+            text_note = ((("畫面上尚未唸出的文字（唸出與劇情相關的部分，外文請翻成中文）：" if s.lang == "zh" else
+                           "On-screen text not read yet (read the story-relevant part, e.g. a headline): ")
+                          + " | ".join(f'"{u}"' for u in unread)) if unread else "")
+            text = clean(lang=s.lang, reply=model.chat(prompts.get("WRITE", s.lang).format(text_note=text_note,
                 cast=cast_text(cast, start + slot["start"]), recent=" | ".join(recent[-3:]) or "(none)",
                 before=dialogue_near(spans, slot["start"], slot["end"], True),
                 after=dialogue_near(spans, slot["start"], slot["end"], False),
                 facts=facts, avail=avail, budget=budget), max_tokens=80))
             if not text:
                 continue
-            if styleguard.is_repeat(text, recent):
+            # a caption line with no unread text on screen is a hallucinated reading (the 8B writer
+            # sometimes echoes an earlier caption): ask once for the visible action instead, else skip
+            if s.lang == "zh" and not unread and CAPTION_LINE.search(text):
+                retry = clean(lang=s.lang, reply=model.chat(prompts.get("WRITE", s.lang).format(text_note=NO_TEXT_NOTE[s.lang],
+                    cast=cast_text(cast, start + slot["start"]), recent=" | ".join(recent[-3:]) or "(none)",
+                    before=dialogue_near(spans, slot["start"], slot["end"], True),
+                    after=dialogue_near(spans, slot["start"], slot["end"], False),
+                    facts=facts, avail=avail, budget=budget), max_tokens=80))
+                if not retry or CAPTION_LINE.search(retry):
+                    skipped_repeats += 1
+                    continue
+                text = retry
+            if text in (r["text"] for r in lines) or styleguard.is_repeat(text, recent, lang=s.lang):
                 skipped_repeats += 1
                 continue
             attempts, status, audio, dur, speed = [], "overflow", None, 0.0, 1.0
             # text gate: story text on screen must be read (deterministic check, model rewrite)
             story = unread
-            if story and not any(styleguard.content_words(u) & styleguard.content_words(text) for u in story):
+            if story and not (any(styleguard.content_words(u, s.lang) & styleguard.content_words(text, s.lang) for u in story)
+                              or (s.lang == "zh" and re.search(r"^(字幕|標題|招牌|告示|文字|字卡|頭條|畫面文字)[:：]|「", text))):
                 attempts.append({"text": text, "seconds": None, "fit": False, "reason": "text gate: on-screen text not read"})
-                text = clean(model.chat(prompts.READ_TEXT.format(text=" | ".join(story), budget=budget, line=text),
+                text = clean(lang=s.lang, reply=model.chat(prompts.get("READ_TEXT", s.lang).format(text=" | ".join(story), budget=budget, line=text),
                                         max_tokens=80)) or text
             for k in range(s.max_rewrites + 1):
-                hard, soft = styleguard.check(text, budget, exempt=unread)
+                hard, soft = styleguard.check(text, budget, exempt=unread, lang=s.lang)
                 if CREDITS.search(text):
                     hard.append("credits")
                 if hard:
@@ -201,12 +224,12 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
                     if k == s.max_rewrites:
                         status = "style"
                         break
-                    text = clean(model.chat(prompts.RESTYLE.format(problems=", ".join(hard), budget=budget, line=text),
+                    text = clean(lang=s.lang, reply=model.chat(prompts.get("RESTYLE", s.lang).format(problems=", ".join(hard), budget=budget, line=text),
                                             max_tokens=80)) or text
                     continue
                 fit = False
                 for sp in s.speeds:
-                    a, d = tts.synth(text, sp)
+                    a, d = tts.synth(L.for_tts(text, s.lang), sp)
                     if sp == s.speeds[0]:
                         d1 = d
                     if d <= avail:
@@ -219,13 +242,13 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
                     break
                 if k == s.max_rewrites:
                     break
-                target = max(2, math.floor(len(text.split()) * avail / d1 * 0.9))
-                shorter = clean(model.chat(prompts.SHORTEN.format(dur=d1, avail=avail, target=target, line=text),
+                target = L.shorten_target(text, avail, d1, s.lang)
+                shorter = clean(lang=s.lang, reply=model.chat(prompts.get("SHORTEN", s.lang).format(dur=d1, avail=avail, target=target, line=text),
                                            max_tokens=60))
                 if not shorter:
                     break
                 text = shorter
-            hard, soft = styleguard.check(text, budget, exempt=unread)
+            hard, soft = styleguard.check(text, budget, exempt=unread, lang=s.lang)
             conf = min([float((by_id[i].get("facts") or {}).get("confidence", 0.5) or 0.5) for i in slot["shots"]])
             flags = list(soft)
             if conf < 0.6:
@@ -255,7 +278,7 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
             t1 = rec["start"] + (rec["duration"] or rec["avail"])
             ids = [sh["id"] for sh in shot_list if gapmap.overlap(rec["start"], t1, sh["start"], sh["end"]) > 0.05] or rec["shots"]
             f = facts_text(by_id, ids) + ("\nOn-screen text shown just before: " + " | ".join(rec["text_read"]) if rec["text_read"] else "")
-            v = llm.parse_json(model.chat(prompts.VERIFY.format(facts=f, line=rec["text"]), max_tokens=120, temperature=0.0))
+            v = llm.parse_json(model.chat(prompts.get("VERIFY", s.lang).format(facts=f, line=rec["text"]), max_tokens=120, temperature=0.0))
             if not isinstance(v, dict) or not isinstance(v.get("supported"), bool):
                 v = {"error": "no verdict"}
             return rec, ids, v
@@ -317,7 +340,7 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
     if inject:
         from .inject import injected_error_test
         with T("injected_error_test"):
-            metrics["injected_error_test"] = injected_error_test(model, lines, by_id, inject, s.concurrency)
+            metrics["injected_error_test"] = injected_error_test(model, lines, by_id, inject, s.concurrency, lang=s.lang)
 
     doc = {"source": {"file": Path(video).name, "start": start, "end": start + total}, "settings": {k: portable(v) for k, v in vars(s).items()} | {"speeds": list(s.speeds)},
            "cast": cast, "shots": [{k: v for k, v in sh.items()} for sh in shot_list], "dialogue": spans,

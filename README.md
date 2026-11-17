@@ -1,45 +1,64 @@
-# GapCaster
+# GapCaster Small
 
-**Offline audio description that fits the silences.**
+**Human-Scale edition of GapCaster: offline audio description that fits the silences, on small open models, in English and Mandarin.**
 
-GapCaster drafts an audio-description (AD) track for a finished video. It finds the silences between lines of dialogue, writes narration sized for each one, speaks it, measures it, and speeds it up slightly or rewrites it until it fits. Every line comes with the evidence behind it, and a human describer approves the result. Everything runs locally on open models.
+GapCaster Small drafts an audio-description (AD) track for a finished video. It finds the silences between lines of dialogue, writes narration sized for each one, speaks it, measures it, and speeds it up slightly or rewrites it until it fits. Every line comes with the evidence behind it, and a human describer approves the result. Everything runs locally on open models of **10 billion parameters or fewer**; nothing is uploaded.
 
-**Finalist — ASUS UGen AI League 2026** · Creator AI · Battlefield Thunderstorm.
+> **Relationship to GapCaster.** This repository is a continuation of [tedinroc/gapcaster](https://github.com/tedinroc/gapcaster) (full history included). The original repository is a competition entry and stays frozen as submitted. Development for blind and low-vision communities in Taiwan, the 8B default profile and Mandarin narration happen here.
 
-**Start here:** [Watch the described sample](samples/tears-of-steel-0-140/clip_with_ad.mp4) · [Read the script](samples/tears-of-steel-0-140/ad_script.txt) · [Run locally](#quick-start) · [Measurement limits](#results-stage-i-laptop-prototype)
+**What is different here**
 
-**Status:** working laptop prototype. The published results below are in-sample measurements on an Apple M5 Max; they are not B70 results. Stage II targets one **ASUS UGen Intel Arc Pro B70 (32 GB)**, with hardware measurements and held-out-film evaluation still ahead. You can inspect the [sample outputs](samples/tears-of-steel-0-140) without downloading models.
+| | GapCaster (original) | GapCaster Small (this repo) |
+|---|---|---|
+| Default vision-language model | Qwen3.8-27B, 8-bit | **Qwen3-VL-8B-Instruct, 8-bit** (27B kept only as an optional quality reference) |
+| Largest model core to the pipeline | 27B | **8B** |
+| Narration languages | English | English and **Mandarin (Traditional Chinese text, `--lang zh`)** |
+| Peak memory on the 2:20 test clip | 33.2 GB | **13.7 GB** (English, 8B) |
 
-![GapCaster review page: narration timing, evidence and human approval](docs/review_top.png)
+## Results on small models (laptop, in-sample)
+
+Measured on an Apple M5 Max laptop on *Tears of Steel* 0:00–2:20 (Blender Foundation, CC BY 3.0). This clip was also the development clip, so every number is in-sample; held-out films are the next measurement. The 27B column is the original GapCaster result, for comparison.
+
+| 0:00–2:20 | 27B, English (original) | **8B, English** | **8B, Mandarin** |
+|---|---:|---:|---:|
+| Lines that fit their silence | 17/17 | 19/19 | 15/15 |
+| Narration over detected speech | 0.0 s | 0.0 s | 0.0 s |
+| Narration over official subtitle cues | 0.4 s | not measured | 0.4 s |
+| Verifier: obvious planted errors flagged | 17/17 | 18/19 | 13/15 |
+| Verifier: subtle in-film errors flagged | 15/17 | 13/19 (verb swaps 0/5) | 11/15 (character and neighbour swaps only) |
+| Verifier flags on unmodified lines | 1/17 | 2/19 | 1/15 |
+| AI-assisted frame check: accurate · minor · wrong | 13 · 4 · 0 | — | 7 · 7 · 1 |
+| Processing per content minute | 125 s | 50 s | 39 s |
+| Peak model memory | 33.2 GB | 13.7 GB | 13.8 GB |
+
+What the numbers say: the 8B profile keeps the timing guarantees (every placed line fits; no narration over detected speech) at well under half the memory, but its descriptions are weaker. In the Mandarin run, one line in fifteen named the wrong character, and the verifier missed it. Describer review stays mandatory. Per-line notes are in [`eval/spotcheck_tears_of_steel_0-140_zh.csv`](eval/spotcheck_tears_of_steel_0-140_zh.csv), with one frame checked per line at its midpoint by an AI assistant. Human describer review and blind and low-vision listener ratings are the next step ([listening pilot](https://tedinroc.github.io/gapcaster/pilot/)).
+
+Provenance: the 8B English sample ([`samples/tears-of-steel-0-140-8b`](samples/tears-of-steel-0-140-8b)) was produced by the original GapCaster code with `GAPCASTER_VLM` pointing at Qwen3-VL-8B. The Mandarin sample ([`samples/tears-of-steel-0-140-zh`](samples/tears-of-steel-0-140-zh)) was produced by this repository with `--lang zh --inject 20`.
+
+### Mandarin narration (`--lang zh`)
+
+- Budget in characters, not words: ⌊window × 4.0 字/s⌋, from 4 to 40 characters. The default voice, Kokoro `zf_xiaobei`, speaks about 4.3 characters per second.
+- Narration is written and stored in Traditional Chinese with Taiwan phrasing (OpenCC `s2twp`). It is converted to Simplified only on the way into the TTS front end, whose Mandarin G2P expects Simplified characters.
+- Shot facts stay in English, where the vision model is most reliable. The writer reads them and writes in Mandarin.
+- The style gate has Mandarin rules: 我們看到／鏡頭 (camera language), 似乎／好像／可能 (speculation) and 我／我們 (first person) are hard blocks; emotion words, evaluative words and similes are flagged. Text read verbatim (「…」 or 字幕：…) is exempt.
+- A caption line written when no unread text is on screen is treated as a hallucinated reading: the writer is asked once for the visible action instead, otherwise the line is dropped.
+- The cast sheet carries Chinese names ([`configs/cast_tears_of_steel_zh.yaml`](configs/cast_tears_of_steel_zh.yaml)).
+- Known gaps: foreign on-screen text is sometimes read untranslated; Kokoro's Mandarin voice is a mainland-accent stock voice, and a Taiwanese voice is needed; the noun and verb planted-error sets need a Chinese part-of-speech tagger and are not run yet.
+
+```bash
+gapcaster run tears_of_steel_720p.mov --out runs/zh --cast configs/cast_tears_of_steel_zh.yaml \
+  --start 0 --end 140 --lang zh --ref-srt TOS-en.srt --inject 20
+```
+
+
+
+**Start here:** [Watch the English sample](samples/tears-of-steel-0-140/clip_with_ad.mp4) · [Mandarin sample](samples/tears-of-steel-0-140-zh/) · [Listening pilot for blind and low-vision listeners](https://tedinroc.github.io/gapcaster/pilot/) · [Run locally](#quick-start)
 
 Built by Ted Chen with AI coding assistance (Claude, Anthropic).
 
-## Results (Stage I, laptop prototype)
+---
 
-Measured on an Apple M5 Max laptop, not on a B70 yet. Demo content: *Tears of Steel* (Blender Foundation, CC BY 3.0). This film was also the development film: the prompts, filters and thresholds were tuned on it, so every number below is in-sample; a held-out film is a Stage II measurement. The numbers were produced by the code at tag [`stage1-results`](https://github.com/tedinroc/gapcaster/tree/stage1-results); later commits fix issues found in an audit (see Known limitations) and have not been re-measured yet.
-
-| Tears of Steel | 0:00–2:20 | Full film |
-|---|---:|---:|
-| Programme analysed | 140 s | 734 s |
-| Shots · dialogue spans · usable silences | 25 · 9 · 9 | 130 · 63 · 44 |
-| **Lines that fit their silence⁴** | **17/17** | **70/71** |
-| …first draft · speed ladder · length rewrite · style rewrite | 15 · 2 · 0 · 0 | 60 · 2 · 5 · 3 |
-| **Narration over official subtitle cues¹** | **0.4 s** | **5.8 s** |
-| Narration over detected speech (internal check) | 0.0 s | 0.0 s |
-| **AI-assisted frame check: accurate · minor · wrong²** | **13 · 4 · 0** | — |
-| Verifier: obvious planted errors flagged³ | 17/17 | 40/40 |
-| Verifier: in-film word/character swaps flagged³ | 15/17 | 34/40 |
-| Verifier flags on unmodified lines⁵ | 1/17 | 5/40 |
-| Processing per content minute | 125 s | 137 s |
-| Peak model memory | 33 GB | 34 GB |
-
-¹ The film's official subtitles are an independent reference. Cues are rounded to whole or half seconds and stay on screen after a line ends, so part of the overlap sits at cue tails; in the full film about 1.4 s falls in cues where neither detector heard speech (short shouts under loud music), and one shout of about 0.8 s was only partly detected.
-² Each excerpt line was compared with the frame at its midpoint by the AI assistant, one frame per line: [`eval/spotcheck_tears_of_steel_0-140.csv`](eval/spotcheck_tears_of_steel_0-140.csv). Human describer review is part of Stage II.
-³ Obvious: an absurd detail appended to a finished line, or a character swapped. In-film: a noun, verb or character borrowed from another shot of the same film, or the line written for a neighbouring silence. The substitutes never appear in the shot facts, so these are still easier than real perception errors. The verifier checks each line against the facts of the shots on screen while it plays; perception errors already in those facts are left to the cast sheet and the human reviewer. The full-film rows cover the first 40 placed lines.
-⁴ Every spoken line fits its silence. The one unplaced line in the full film read an on-screen quote containing "we", and the first-person rule wrongly held it back (a false positive since fixed: on-screen text read verbatim is now exempt).
-⁵ The verifier's own flags on lines nobody corrupted. They are not all false alarms: the excerpt's single flag (AD015) is a real minor error in the frame check.
-
-Sample outputs from the 140-second run are in [`samples/tears-of-steel-0-140`](samples/tears-of-steel-0-140): the description script ([`ad_script.txt`](samples/tears-of-steel-0-140/ad_script.txt)), a WebVTT `kind="descriptions"` track, SRT, the full JSON script with provenance, the review page ([`review.html`](samples/tears-of-steel-0-140/review.html), full screenshot [`docs/review.png`](docs/review.png)) and the mixed clip. The full film's script is in [`samples/tears-of-steel-full`](samples/tears-of-steel-full).
+The rest of this README describes the pipeline, which is the same in both repositories; numbers marked "27B" come from the original runs.
 
 ## How it works
 
@@ -74,13 +93,13 @@ And the style gate at work in the full film (`AD001`): *A caption: Blender Found
 
 ## Quick start
 
-Requirements: an Apple Silicon Mac with at least 48 GB of unified memory (64 GB recommended; peak use is about 34 GB), about 35 GB of free disk (the first run downloads about 31 GB of models), Python 3.11–3.13, [uv](https://docs.astral.sh/uv/) and `ffmpeg` on PATH. You can inspect the sample outputs without any models: open `samples/tears-of-steel-0-140/review.html`.
+Requirements: an Apple Silicon Mac with at least 24 GB of unified memory for the default 8B profile (peak use is about 14 GB; the optional 27B reference profile needs 48 GB or more), about 15 GB of free disk for the default models, Python 3.11–3.13, [uv](https://docs.astral.sh/uv/) and `ffmpeg` on PATH. You can inspect the sample outputs without any models: open `samples/tears-of-steel-0-140/review.html`.
 
 ```bash
-git clone https://github.com/tedinroc/gapcaster.git
-cd gapcaster
+git clone https://github.com/tedinroc/gapcaster-small.git
+cd gapcaster-small
 uv venv --python 3.11 && source .venv/bin/activate
-uv pip install -e ".[mac]"
+uv pip install -e ".[mac]"   # add opencc-python-reimplemented "misaki[zh]" for --lang zh
 
 # the demo film and its official subtitles (subtitles are used only for evaluation)
 curl -LO https://download.blender.org/demo/movies/ToS/tears_of_steel_720p.mov
@@ -105,9 +124,9 @@ gapcaster run tears_of_steel_720p.mov --out runs/b70 --backend openai --base-url
 
 On Linux, OpenCV (pulled in by PySceneDetect) needs `libgl1`.
 
-| Stage | `mlx` (Stage I laptop) | Portable runtime | Status of the portable runtime |
+| Stage | `mlx` (laptop) | Portable runtime | Status of the portable runtime |
 |---|---|---|---|
-| Vision-language model | mlx-vlm, in-process | any OpenAI-compatible server (`--backend openai`, `--concurrency`) | client implemented and run against a local stand-in; Stage II validation on the B70 |
+| Vision-language model | mlx-vlm, in-process | any OpenAI-compatible server (`--backend openai`, `--concurrency`) | client implemented and run against a local stand-in; not yet validated on a GPU server |
 | Speech recognition | mlx-whisper | OpenVINO GenAI WhisperPipeline (`--asr openvino`, CPU or GPU) | runs on a laptop CPU: dialogue map IoU 0.835 against MLX (both include the shared VAD spans; speech-recognition-only IoU 0.77) |
 | Text-to-speech | mlx-audio Kokoro | PyTorch Kokoro (`--tts kokoro`, CPU or XPU) | runs on a laptop CPU: line durations within 33 ms of MLX |
 
@@ -135,30 +154,15 @@ python eval/parity.py runs/demo                          # MLX vs OpenVINO/PyTor
 
 ## Known limitations
 
-- The writer sees every shot in its silence, but a short line may finish before a later shot appears; in the full film 10 of 70 lines were written partly from such shots, and these account for about half the verifier's flags. Stage II rewrites a line from only the shots on screen while it plays.
+- The writer sees every shot in its silence, but a short line may finish before a later shot appears; in the full film 10 of 70 lines were written partly from such shots, and these account for about half the verifier's flags. Planned fix: rewrite a line from only the shots on screen while it plays.
 - The text gate forces one rewrite; a later shortening for time can still drop the text (two cases in the full film).
 - End-credit rolls slipped through the credits pattern in the full-film run; the pattern has since been extended.
-- English only; Traditional Chinese narration is planned.
-- Timings were measured on a laptop that was also running other jobs; Stage II re-times on an idle machine.
+- Mandarin narration is new and has only been measured on one clip (see above).
+- Timings were measured on a laptop that was also running other jobs; they will be re-timed on an idle machine.
 
-## Stage II: one ASUS UGen Intel Arc Pro B70
+## Other hardware
 
-The orchestrator stays the same; the models move to the card.
-
-| Component | Stage I (laptop) | Stage II (Arc Pro B70) | Licence |
-|---|---|---|---|
-| Vision-language model | Qwen3.8-27B, 8-bit MLX, in-process | Qwen3.8-27B on Intel llm-scaler-vllm 1.5 (online INT4, FP8 KV cache); fallback Qwen3-VL-8B | Apache-2.0 |
-| Speech recognition | Whisper large-v3-turbo (MLX) | Whisper large-v3-turbo (OpenVINO GenAI, word timestamps) | MIT |
-| Voice activity detection | Silero VAD | Silero VAD | MIT |
-| Text-to-speech | Kokoro-82M (mlx-audio) | Kokoro-82M (PyTorch, CPU or XPU) | Apache-2.0 |
-| Shot detection | PySceneDetect | PySceneDetect on hardware-decoded frames | BSD-3-Clause |
-| Media | ffmpeg | ffmpeg with QSV / VA-API decode on the card's media engines | external tool |
-
-Planned residency on one 32 GB card (estimate, to be measured): Qwen3.8-27B INT4 with FP8 KV cache, vLLM capped at 0.72 (≈ 23 GB) · Whisper large-v3-turbo (≈ 2.5 GB) · Kokoro-82M (≤ 1 GB) · runtime contexts (≈ 2 GB) → **≈ 28.5 GB**. Intel's published Qwen3.8-27B recipe uses two GPUs, so single-card INT4 with image input is a Stage II experiment; the fallback puts shot facts on Qwen3-VL-8B or 30B-A3B (both in llm-scaler's vision-language list).
-
-Three ways to deploy one card: an **overnight queue** (full card, shot facts batched through vLLM), **describer seats** (the B70 supports up to 4 SR-IOV virtual GPUs; each could run a lean ≈ 7 GB profile of Qwen3-VL-8B INT4 + Whisper INT8 for interactive redrafts, if VRAM splits evenly, which Intel does not publish), and a **two-card studio** (64 GB, parallel language tracks).
-
-Stage II measurements: processing time per content minute, throughput against concurrency, peak VRAM, energy per content minute, and small pilots of describer edit time and blind and low-vision listener ratings.
+The orchestrator does not depend on Apple Silicon: the vision-language model can be served by any OpenAI-compatible server (for example vLLM on an Intel Arc or NVIDIA card), speech recognition can run on OpenVINO (CPU or GPU) and Kokoro on PyTorch (CPU or Intel XPU). The hardware study that targets a single 32 GB Intel Arc Pro B70 card is documented in the original [GapCaster repository](https://github.com/tedinroc/gapcaster#stage-ii-one-asus-ugen-intel-arc-pro-b70). Here the goal is the smallest machine that does the job well: the 8B profile's 14 GB peak should fit 24 GB laptops and 16 GB GPUs with 4-bit weights. That still has to be measured.
 
 ## Project layout
 

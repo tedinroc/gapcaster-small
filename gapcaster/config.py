@@ -13,14 +13,18 @@ class Settings:
     breath: float = 0.8             # minimum quiet between two AD lines
     max_slot: float = 7.0           # long silences are split at shot boundaries
     # Writing budget
-    words_per_sec: float = 2.6      # first-guess speaking rate for the budget
+    words_per_sec: float = 2.6      # first-guess speaking rate for the budget (English, words)
+    chars_per_sec: float = 4.0      # Mandarin budget in characters per second (Kokoro zf_xiaobei speaks about 4.3)
     # Fit loop
     speeds: tuple = (1.0, 1.08, 1.15)
     max_rewrites: int = 3
     # Models
     whisper_model: str = "mlx-community/whisper-large-v3-turbo"
-    # Hugging Face repo id or a local folder (set GAPCASTER_VLM to use a copy already on disk)
-    vlm_model: str = os.environ.get("GAPCASTER_VLM", "lmstudio-community/Qwen3.8-27B-MLX-8bit")
+    # Hugging Face repo id or a local folder (set GAPCASTER_VLM to use a copy already on disk).
+    # Human-Scale default: an 8B vision-language model (about 14 GB peak on the test clip).
+    # The 27B model used in the original GapCaster runs is kept as an optional quality reference:
+    #   GAPCASTER_VLM=lmstudio-community/Qwen3.8-27B-MLX-8bit
+    vlm_model: str = os.environ.get("GAPCASTER_VLM", "mlx-community/Qwen3-VL-8B-Instruct-8bit")
     tts_model: str = "mlx-community/Kokoro-82M-bf16"
     tts_voice: str = "af_heart"
     llm_backend: str = "mlx"        # "mlx" (in-process, Mac) or "openai" (any OpenAI-compatible server, e.g. vLLM on Arc Pro B70)

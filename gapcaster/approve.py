@@ -11,6 +11,7 @@ import soundfile as sf
 
 from . import export, media
 from .config import Settings
+from .lang import for_tts
 from .tts import TTS
 
 
@@ -44,7 +45,7 @@ def apply(run_dir, approved_path, settings: Settings | None = None, tts_backend:
             tts = tts or TTS(s.tts_model, s.tts_voice, s.lang, backend=s.tts_backend)
             text, fit, dur = new_text or r["text"], None, 0.0
             for sp in s.speeds:
-                a, dur = tts.synth(text, sp)
+                a, dur = tts.synth(for_tts(text, s.lang), sp)
                 if dur <= r["avail"]:
                     fit = (a, dur, sp)
                     break

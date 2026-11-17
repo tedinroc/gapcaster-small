@@ -14,6 +14,9 @@ from . import llm, prompts
 ADDS = [", holding a red umbrella", " as rain falls", " in a crowded train station", ". A sign reads EXIT", " beside a white horse"]
 SWAPS = [("Thom", "Celia"), ("Celia", "Thom"), ("the sniper", "the old man"), ("the old man", "the sniper"),
          ("The sniper", "The old man"), ("The old man", "The sniper"), (" man", " woman"), (" woman", " man")]
+# Mandarin: the same kinds of planted error, written in Traditional Chinese
+ADDS_ZH = ["，手裡拿著一把紅傘", "，天空下著大雨", "，身處擁擠的火車站", "。招牌寫著「出口」", "，身旁有一匹白馬"]
+SWAPS_ZH = [("湯姆", "席莉雅"), ("席莉雅", "湯姆"), ("狙擊手", "老人"), ("老人", "狙擊手"), ("男子", "女子"), ("女子", "男子")]
 _nlp = None
 
 
@@ -25,7 +28,13 @@ def _spacy():
     return _nlp
 
 
-def easy(text: str, i: int) -> str:
+def easy(text: str, i: int, lang: str = "en") -> str:
+    if lang == "zh":
+        if i % 3 == 1:
+            for a, b in SWAPS_ZH:
+                if a in text:
+                    return text.replace(a, b, 1)
+        return text.rstrip("。.") + ADDS_ZH[i % len(ADDS_ZH)] + "。"
     if i % 3 == 1:
         for a, b in SWAPS:
             if a in text:
@@ -51,13 +60,16 @@ def _pool(shots_by_id, exclude_ids, pos):
     return out
 
 
-def hard(rec, i, lines, shots_by_id, facts_words):
-    """Return (kind, corrupted line) or None."""
-    text, nlp = rec["text"], _spacy()
-    kinds = ["noun", "verb", "character", "neighbour"]
-    for kind in kinds[i % 4:] + kinds[: i % 4]:
+def hard(rec, i, lines, shots_by_id, facts_words, lang: str = "en"):
+    """Return (kind, corrupted line) or None. Mandarin uses the character and neighbour kinds only
+    (noun and verb borrowing needs an English part-of-speech tagger)."""
+    text = rec["text"]
+    nlp = _spacy() if lang == "en" else None
+    kinds = ["noun", "verb", "character", "neighbour"] if lang == "en" else ["character", "neighbour"]
+    swaps = SWAPS[:6] if lang == "en" else SWAPS_ZH[:4]
+    for kind in kinds[i % len(kinds):] + kinds[: i % len(kinds)]:
         if kind == "character":
-            for a, b in SWAPS[:6]:
+            for a, b in swaps:
                 if a in text:
                     return kind, text.replace(a, b, 1)
         elif kind == "neighbour":
@@ -80,7 +92,7 @@ def hard(rec, i, lines, shots_by_id, facts_words):
     return None
 
 
-def injected_error_test(model, lines, shots_by_id, n: int, workers: int = 1):
+def injected_error_test(model, lines, shots_by_id, n: int, workers: int = 1, lang: str = "en"):
     from .pipeline import facts_text
     pool = [r for r in lines if r.get("audio")][:n]
 
@@ -93,14 +105,14 @@ def injected_error_test(model, lines, shots_by_id, n: int, workers: int = 1):
     jobs = []
     for i, r in enumerate(pool):
         f = facts_for(r)
-        jobs.append(("easy", "append/swap", r, f, easy(r["text"], i)))
-        h = hard(r, i, lines, shots_by_id, set(re.findall(r"[a-z]+", f.lower())))
+        jobs.append(("easy", "append/swap", r, f, easy(r["text"], i, lang)))
+        h = hard(r, i, lines, shots_by_id, set(re.findall(r"[a-z]+", f.lower())), lang)
         if h:
             jobs.append(("hard", h[0], r, f, h[1]))
 
     def run(job):
         level, kind, r, f, bad = job
-        v = llm.parse_json(model.chat(prompts.VERIFY.format(facts=f, line=bad), max_tokens=120, temperature=0.0))
+        v = llm.parse_json(model.chat(prompts.get("VERIFY", lang).format(facts=f, line=bad), max_tokens=120, temperature=0.0))
         ok = isinstance(v, dict) and isinstance(v.get("supported"), bool)
         return {"set": level, "kind": kind, "line": r["id"], "original": r["text"], "corrupted": bad,
                 "caught": ok and v["supported"] is False, "verdict_missing": not ok,

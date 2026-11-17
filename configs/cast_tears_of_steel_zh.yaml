@@ -1,0 +1,12 @@
+# 角色表（中文口述用）：由口述影像員在執行前填寫。name 會直接出現在旁白中。
+# look 用英文寫，因為視覺模型以英文比對外觀；named_from 規則同英文版。
+- name: 席莉雅
+  look: young woman, red hair tied back, blue jacket under a dark vest, a robotic hand
+  named_from: 25
+- name: 湯姆
+  look: young man, dark hair, black leather jacket over a printed T-shirt
+  named_from: 23
+- name: 狙擊手
+  look: young Black man, short dark hair, dark padded jacket, futuristic rifle with a scope
+- name: 老人
+  look: older man, shoulder-length grey hair, dark checked jacket

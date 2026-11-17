@@ -1,6 +1,6 @@
 [project]
-name = "gapcaster"
-version = "0.1.0"
+name = "gapcaster-small"
+version = "0.2.0"
 description = "Offline audio-description drafting: fit narration into the silences between dialogue."
 readme = "README.md"
 license = { text = "MIT" }
@@ -16,6 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 mac = ["mlx-whisper", "mlx-vlm", "mlx-audio", "misaki[en]", "spacy"]
+zh = ["misaki[zh]", "opencc-python-reimplemented"]
 intel = ["openvino-genai", "kokoro", "torch", "misaki[en]", "spacy"]
 dev = ["pytest"]
 

@@ -1,0 +1,16 @@
+line,start_s,text,frame_check,note
+AD001,11.35,四具引擎噴出粉白火光，煙霧翻滾。,accurate,bright engine flames and smoke
+AD002,18.42,工業區中央射出強光，照亮灰濛天空。,accurate,light beam over industrial skyline
+AD003,45.55,四十年後，霓虹燈閃爍,minor,"the glowing shapes are holographic wireframe robots, not neon signs"
+AD004,53.95,字幕：SIMULATION READY...,minor,text is correct but read in English instead of translated
+AD005,62.65,字幕：TEARS OF STEEL。,minor,title read as the next shot (old man with brain model) is already on screen
+AD006,69.92,巨大的機械結構壓住高樓與船桅,minor,"massive structure over the city is right; 'ship masts' are church spires"
+AD007,74.08,席莉雅躺在地板上，兩盞蠟燭亮著。,wrong,"names Celia; the person resting by candles is the old man (cast sheet mismatch); verifier did not flag it"
+AD008,79.38,字幕：機械師製造殺人機器。,minor,"headline read, but translation loose (Roboticist creates killer robots)"
+AD009,82.73,狙擊手穩穩扣住槍機。,accurate,sniper aiming rifle
+AD010,92.42,狙擊手凝視前方，呼吸放緩。,minor,'breathing slows' is not visible
+AD011,96.00,機械飛行器盤旋城上。,accurate,flying machine over city seen through scope
+AD012,99.00,老人靜躺床上，狙擊手低姿瞄準。,accurate,old man lying still; sniper aiming behind
+AD013,103.15,蒸汽飛船盤旋城上，引擎噴煙，燈光閃爍。,accurate,airship with lights over rooftops
+AD014,118.95,老人前傾身子，抬手比劃。狙擊手低姿瞄準不動。,minor,midpoint frame shows the old man reclining; the gesture is not in this frame
+AD015,133.25,老人跪地，仰頭。,accurate,"old man crouching, looking up; the verifier flagged this line (false alarm)"

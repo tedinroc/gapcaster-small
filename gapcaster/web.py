@@ -55,6 +55,7 @@ label{display:block;font-weight:600;font-size:14px;margin-bottom:4px}
 input,select,textarea{width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--line);background:var(--card2);color:var(--ink);font:inherit}
 textarea{min-height:76px;font-family:ui-monospace,Menlo,monospace;font-size:13px}
 pre.log{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px;max-height:240px;overflow:auto;white-space:pre-wrap;margin:12px 0 0}
+main:focus:not(:focus-visible){outline:none}
 footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
 </style>
 </head>
@@ -65,7 +66,7 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-si
     <h1 class="brand">Gap<span>Caster</span> Small · 本地工作台 / Local Studio</h1>
     <div class="badge">127.0.0.1 · 零雲端上傳 / Zero cloud uploads · ≤10B open models</div>
   </header>
-  <main id="main">
+  <main id="main" tabindex="-1">
     <section class="card" aria-labelledby="h-runs">
       <h2 id="h-runs">1. 審核與匯出 · Inspect &amp; Review Runs</h2>
       <p class="sub">無需下載模型即可直接開啟內建的繁體中文與英文 8B 示範，逐句審核畫面證據並一鍵匯出核准後的字幕與音軌。 Open any run below to audit evidence per line, edit text, and export only approved lines.</p>

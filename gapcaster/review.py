@@ -65,6 +65,7 @@ button.primary{background:var(--ad);border-color:var(--ad);color:var(--ad-ink)}
 .line[data-state=rejected]{border-style:dashed;border-color:var(--no)}
 .state{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--muted)}
 .txt[contenteditable=true]{outline:3px dashed var(--ad);outline-offset:3px;background:var(--bg)}
+main:focus:not(:focus-visible),#lines:focus:not(:focus-visible){outline:none}
 footer{padding-top:10px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
 @media (max-width:820px){.line{grid-template-columns:1fr}}
 """
@@ -111,6 +112,9 @@ document.getElementById('dl-json').onclick=()=>{document.querySelectorAll('.line
  download('approved.json',JSON.stringify({run:document.body.dataset.run,lines},null,1),'application/json');};
 document.getElementById('dl-vtt').onclick=()=>{let v='WEBVTT\nKind: descriptions\n\n';document.querySelectorAll('.line').forEach(el=>{const s=st[el.dataset.id];if(!s||s.status==='rejected'||s.status==='pending')return;
  v+=el.dataset.id+'\n'+el.dataset.a+' --> '+el.dataset.b+'\n'+s.text+'\n\n';});download('approved.vtt',v,'text/vtt');};
+const skipLink=document.querySelector('.skip');
+if(skipLink){skipLink.addEventListener('click',e=>{const tgt=document.getElementById('lines')||document.getElementById('main');if(tgt){e.preventDefault();tgt.focus();tgt.scrollIntoView({block:'start'});}});}
+document.addEventListener('error',e=>{if(e.target&&e.target.matches&&e.target.matches('audio,video')){say(ZH?'媒體檔案載入失敗，請確認本機檔案路徑或網路連線。':'Media file failed to load; please check file path or connection.');}},true);
 paint();
 """
 
@@ -188,7 +192,7 @@ def build(run_dir):
     out = [f'<!doctype html><html lang="{html_lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{title}</title><style>{CSS}</style></head><body data-run="{run_id}">']
     out.append(f'<a class="skip" href="#lines">{skip_txt}</a><div id="sr-status" class="sr-only" role="status" aria-live="polite"></div><div class="wrap">')
     out.append(f'<header><div><h1>Gap<span>Caster</span> {"審核頁" if zh else "review"}</h1><div class="sub">{sub_txt}</div></div></header>')
-    out.append('<main id="main">')
+    out.append('<main id="main" tabindex="-1">')
     if zh:
         out.append('<div class="bar2" role="region" aria-label="審核統計與匯出"><span>審核進度：</span> <b id="n-approved">0</b> 已核准 · <b id="n-edited">0</b> 已修改 · <b id="n-rejected">0</b> 已剔除 · <b id="n-pending">0</b> 待審核 <span style="flex:1"></span>'
                    '<button class="primary" id="dl-json" type="button">下載 approved.json</button><button id="dl-vtt" type="button">下載核准版 .vtt</button></div>')
@@ -206,7 +210,7 @@ def build(run_dir):
             media.frame(run / "clip_with_ad.mp4", m["clip_seconds"] * 0.57, poster, width=1280)
         v_lbl = "預覽混入合成口述初稿之影片" if zh else "Preview clip with draft audio description"
         out.append(f'<video controls preload="none" poster="poster.jpg" src="clip_with_ad.mp4" aria-label="{v_lbl}"></video>')
-    out.append('<section id="lines" class="lines-list" aria-label="' + ("口述旁白草稿列表" if zh else "Draft audio description lines") + '">')
+    out.append('<section id="lines" tabindex="-1" class="lines-list" aria-label="' + ("口述旁白草稿列表" if zh else "Draft audio description lines") + '">')
     from .export import ts as _ts
     for r in doc["lines"]:
         sh = shots.get(r["shots"][0]) if r["shots"] else None

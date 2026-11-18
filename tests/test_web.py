@@ -60,7 +60,7 @@ def test_studio_lists_samples_serves_range_and_exports_approved(tmp_path):
         # 1. Studio home page (with WCAG landmarks & h1)
         home = urllib.request.urlopen(f"{base}/").read().decode("utf-8")
         assert "GapCaster" in home and "127.0.0.1" in home
-        assert '<h1 class="brand">' in home and '<main id="main">' in home
+        assert '<h1 class="brand">' in home and '<main id="main" tabindex="-1">' in home
 
         # 2. Runs listing includes bundled sample
         listing = json.loads(urllib.request.urlopen(f"{base}/api/runs").read().decode("utf-8"))
@@ -70,7 +70,7 @@ def test_studio_lists_samples_serves_range_and_exports_approved(tmp_path):
         # 3. Review page includes WCAG lang/landmarks/ARIA and injected one-click export toolbar
         rev = urllib.request.urlopen(f"{base}/samples/demo-zh/review.html").read().decode("utf-8")
         assert "studio-export-btn" in rev and "/api/export/sample/demo-zh" in rev
-        assert '<html lang="zh-Hant">' in rev and '<main id="main">' in rev
+        assert '<html lang="zh-Hant">' in rev and '<main id="main" tabindex="-1">' in rev
         assert 'aria-label="核准 AD001"' in rev and 'aria-pressed="false"' in rev
 
         # 4. HTTP Range support for audio/video scrubbing

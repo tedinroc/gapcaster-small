@@ -30,13 +30,14 @@ STUDIO_HTML = """<!doctype html>
 :root{--bg:#101412;--card:#181e1b;--card2:#202824;--ink:#eff3f0;--muted:#a8b3ad;--line:#313c36;--accent:#fb923c;--accent-ink:#241102;--ok:#6ee7a8;--focus:#fde047}
 @media (prefers-color-scheme:light){:root{--bg:#f5f6f2;--card:#ffffff;--card2:#eef1ec;--ink:#181d1a;--muted:#525e57;--line:#cfd6d0;--accent:#b44309;--accent-ink:#ffffff;--ok:#1d7244;--focus:#0052a3}}
 *{box-sizing:border-box}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC",sans-serif}
-a{color:inherit}
-.skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--accent-ink);padding:10px 16px;border-radius:0 0 8px 0;z-index:10;font-weight:700}
-.skip:focus{left:0}
+a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--accent-ink);padding:10px 16px;border-radius:0 0 8px 0;z-index:10;font-weight:700;text-decoration:none}
+.skip:focus{left:0;outline:3px solid var(--focus);outline-offset:2px}
 .wrap{max-width:1040px;margin:0 auto;padding:24px 20px 64px}
 header{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.brand{font-size:21px;font-weight:800;letter-spacing:-.01em}
+.brand{margin:0;font-size:21px;font-weight:800;letter-spacing:-.01em}
 .brand span{color:var(--accent)}
 .badge{font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--muted)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:20px}
@@ -61,7 +62,7 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-si
 <a class="skip" href="#main">跳到主要內容 · Skip to main content</a>
 <div class="wrap">
   <header>
-    <div class="brand">Gap<span>Caster</span> Small · 本地工作台 / Local Studio</div>
+    <h1 class="brand">Gap<span>Caster</span> Small · 本地工作台 / Local Studio</h1>
     <div class="badge">127.0.0.1 · 零雲端上傳 / Zero cloud uploads · ≤10B open models</div>
   </header>
   <main id="main">
@@ -132,12 +133,15 @@ async function loadRuns(){
     const aRev = document.createElement('a');
     aRev.className = 'btn'; aRev.href = `/${r.kind}s/${encodeURIComponent(r.slug)}/review.html`;
     aRev.textContent = '開啟審核頁 · Review & Export';
+    aRev.setAttribute('aria-label', `開啟 ${r.title} 審核頁 · Review & Export ${r.title}`);
     const aVtt = document.createElement('a');
     aVtt.className = 'btn sec'; aVtt.href = `/${r.kind}s/${encodeURIComponent(r.slug)}/ad.vtt`;
     aVtt.textContent = 'WebVTT';
+    aVtt.setAttribute('aria-label', `下載 ${r.title} WebVTT 字幕`);
     const aJson = document.createElement('a');
     aJson.className = 'btn sec'; aJson.href = `/${r.kind}s/${encodeURIComponent(r.slug)}/script.json`;
     aJson.textContent = 'Provenance JSON';
+    aJson.setAttribute('aria-label', `查看 ${r.title} Provenance JSON`);
     acts.append(aRev, aVtt, aJson);
     if(r.approved_url){
       const aApp = document.createElement('a');
@@ -328,7 +332,7 @@ def make_handler(state: StudioState):
             if inject_kind and target.name == "review.html":
                 raw = target.read_text(encoding="utf-8")
                 patch = REVIEW_INJECT.replace("__KIND__", inject_kind).replace("__SLUG__", slug)
-                raw = raw + patch
+                raw = raw.replace("</body>", patch + "</body>", 1) if "</body>" in raw else raw + patch
                 self._bytes(raw.encode("utf-8"), "text/html; charset=utf-8")
                 return
             ctype = mimetypes.guess_type(str(target))[0] or "application/octet-stream"

@@ -49,9 +49,22 @@ def has_content(text: str, lang: str = "en") -> bool:
     return bool(re.search(r"[A-Za-z]{2,}", text))
 
 
+TW_TERMS = (
+    ("黃油", "奶油"),
+    ("衛衣", "運動衫"),
+    ("視頻", "影片"),
+    ("屏幕", "螢幕"),
+    ("鼠標", "滑鼠"),
+)
+
+
 def to_traditional(text: str) -> str:
-    """Normalise model output to Traditional Chinese with Taiwan phrasing (no-op for text already Traditional)."""
-    return _converter("s2twp").convert(text)
+    """Normalise model output to Traditional Chinese with Taiwan phrasing."""
+    out = _converter("s2twp").convert(text)
+    for cn, tw in TW_TERMS:
+        if cn in out:
+            out = out.replace(cn, tw)
+    return out
 
 
 def for_tts(text: str, lang: str = "en") -> str:

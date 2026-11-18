@@ -1,0 +1,1941 @@
+{
+ "source": {
+  "file": "grandma_words.mp4",
+  "start": 0.0,
+  "end": 140.014875
+ },
+ "settings": {
+  "lang": "zh",
+  "merge_pause": 0.6,
+  "lead": 0.25,
+  "tail": 0.3,
+  "min_slot": 1.1,
+  "breath": 0.8,
+  "max_slot": 7.0,
+  "words_per_sec": 2.6,
+  "chars_per_sec": 4.0,
+  "speeds": [
+   1.0,
+   1.08,
+   1.15
+  ],
+  "max_rewrites": 3,
+  "whisper_model": "mlx-community/whisper-large-v3-turbo",
+  "vlm_model": "mlx-community/Qwen3-VL-8B-Instruct-8bit",
+  "tts_model": "mlx-community/Kokoro-82M-bf16",
+  "tts_voice": "zf_xiaobei",
+  "llm_backend": "mlx",
+  "llm_base_url": "http://127.0.0.1:8000/v1",
+  "llm_model_name": "qwen",
+  "concurrency": 8,
+  "asr_backend": "mlx",
+  "asr_ov_model": "OpenVINO/whisper-large-v3-turbo-int8-ov",
+  "asr_device": "CPU",
+  "tts_backend": "mlx",
+  "extra": {}
+ },
+ "cast": [],
+ "shots": [
+  {
+   "id": "S001",
+   "start": 0.0,
+   "end": 4.546,
+   "frames": [
+    "frames/S001_0.jpg"
+   ],
+   "facts": {
+    "who": "none",
+    "where": "beach with sand",
+    "action": "a gray sweatshirt with white letters 'HCO' is shown, with a gold cross necklace hanging from it",
+    "text": "HCO",
+    "key": "a gray sweatshirt with white letters 'HCO' and a gold cross necklace hanging from it",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S002",
+   "start": 4.546,
+   "end": 7.716,
+   "frames": [
+    "frames/S002_0.jpg"
+   ],
+   "facts": {
+    "who": "none",
+    "where": "a beach with ocean waves",
+    "action": "waves are rolling onto the shore, creating a wet sandy beach",
+    "text": "",
+    "key": "a gray, overcast day at the beach with waves breaking on the shore",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S003",
+   "start": 7.716,
+   "end": 10.219,
+   "frames": [
+    "frames/S003_0.jpg"
+   ],
+   "facts": {
+    "who": "none",
+    "where": "outdoors, near water",
+    "action": "a person wearing a gray sweatshirt with white lettering and a black beaded necklace with a gold cross pendant",
+    "text": "",
+    "key": "a gold cross pendant hanging from a black beaded necklace on a gray sweatshirt with white lettering",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S004",
+   "start": 10.219,
+   "end": 15.307,
+   "frames": [
+    "frames/S004_0.jpg",
+    "frames/S004_1.jpg"
+   ],
+   "facts": {
+    "who": "a young man with short dark hair and a gray t-shirt",
+    "where": "a beach with the ocean in the background",
+    "action": "the man is looking to his right, then lowers his head and looks down",
+    "text": "",
+    "key": "the man is looking away from the camera and then looking down",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S005",
+   "start": 15.307,
+   "end": 20.395,
+   "frames": [
+    "frames/S005_0.jpg",
+    "frames/S005_1.jpg"
+   ],
+   "facts": {
+    "who": "none",
+    "where": "beach",
+    "action": "a person wearing a gray t-shirt with white lettering and a black beaded necklace with a gold cross pendant is standing near the ocean",
+    "text": "",
+    "key": "a gold cross pendant on a black beaded necklace",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S006",
+   "start": 20.395,
+   "end": 27.527,
+   "frames": [
+    "frames/S006_0.jpg",
+    "frames/S006_1.jpg"
+   ],
+   "facts": {
+    "who": "a young man with short black hair, wearing a gray t-shirt and a necklace, hands clasped in front of his chest",
+    "where": "an outdoor, open, wet area, possibly a beach or tidal flat, with a low wall and distant buildings under an overcast sky",
+    "action": "the young man is standing with his eyes closed and hands clasped in prayer",
+    "text": "我們在天上的父啊",
+    "key": "A young man is praying with his eyes closed and hands clasped in front of his chest.",
+    "confidence": 0.98
+   }
+  },
+  {
+   "id": "S007",
+   "start": 27.527,
+   "end": 34.66,
+   "frames": [
+    "frames/S007_0.jpg",
+    "frames/S007_1.jpg"
+   ],
+   "facts": {
+    "who": "a young man with short black hair, wearing a gray t-shirt and a black necklace, hands clasped in front of his chest",
+    "where": "an outdoor area with wet sand or mud, possibly a beach or tidal flat, with a low wall and distant buildings and trees under an overcast sky",
+    "action": "the young man is standing with his eyes closed and hands clasped together in front of his chest, appearing to be in a state of prayer or deep contemplation",
+    "text": "過得幸福快樂",
+    "key": "a young man is praying with his eyes closed and hands clasped, standing on a wet, expansive outdoor surface.",
+    "confidence": 0.98
+   }
+  },
+  {
+   "id": "S008",
+   "start": 34.66,
+   "end": 41.792,
+   "frames": [
+    "frames/S008_0.jpg",
+    "frames/S008_1.jpg"
+   ],
+   "facts": {
+    "who": "a young man with short black hair, wearing a gray t-shirt with white lettering and a black beaded necklace with a cross pendant",
+    "where": "a wide, wet beach with a concrete seawall and distant buildings and trees under an overcast sky",
+    "action": "the young man is looking down at his hands, then looks up and to his right with a thoughtful expression",
+    "text": "阿門",
+    "key": "The young man is wearing a black beaded necklace with a cross pendant and is standing on a wet beach.",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S009",
+   "start": 41.792,
+   "end": 49.216,
+   "frames": [
+    "frames/S009_0.jpg",
+    "frames/S009_1.jpg"
+   ],
+   "facts": {
+    "who": "none",
+    "where": "a beach with wet sand and tidal pools, with the ocean in the background under an overcast sky",
+    "action": "a distant ship is visible on the horizon, and the text '阿嬤的話' is overlaid on the image",
+    "text": "阿嬤的話",
+    "key": "The image displays the text '阿嬤的話' (Grandma's words) over a wide shot of a beach with tidal pools and a distant ship on the horizon.",
+    "confidence": 0.98
+   }
+  },
+  {
+   "id": "S010",
+   "start": 49.216,
+   "end": 55.097,
+   "frames": [
+    "frames/S010_0.jpg",
+    "frames/S010_1.jpg"
+   ],
+   "facts": {
+    "who": "none",
+    "where": "none",
+    "action": "The screen is black with white Chinese characters appearing sequentially.",
+    "text": "阿嬤告訴我\n不能拿香拜拜",
+    "key": "White Chinese text appears on a black background, stating '阿嬤告訴我' and then '不能拿香拜拜'.",
+    "confidence": 1.0
+   }
+  },
+  {
+   "id": "S011",
+   "start": 55.097,
+   "end": 62.604,
+   "frames": [
+    "frames/S011_0.jpg",
+    "frames/S011_1.jpg"
+   ],
+   "facts": {
+    "who": "a person's arm and hand",
+    "where": "inside a room, near a wooden door",
+    "action": "a person is turning a doorknob to open a door",
+    "text": "",
+    "key": "a hand is turning a doorknob on a wooden door",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S012",
+   "start": 62.604,
+   "end": 69.528,
+   "frames": [
+    "frames/S012_0.jpg",
+    "frames/S012_1.jpg"
+   ],
+   "facts": {
+    "who": "a person's hand",
+    "where": "an indoor setting with a dark, textured surface",
+    "action": "a hand rests flat on the top edge of a dark, worn surface, fingers slightly spread",
+    "text": "",
+    "key": "a hand is touching a dark, textured surface with visible wear and small specks",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S013",
+   "start": 69.528,
+   "end": 71.78,
+   "frames": [
+    "frames/S013_0.jpg"
+   ],
+   "facts": {
+    "who": "a person with hands visible",
+    "where": "a dark, wooden surface",
+    "action": "a person is pressing their hands against a dark wooden surface, possibly a table or desk",
+    "text": "",
+    "key": "hands pressing against a dark wooden surface",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S014",
+   "start": 71.78,
+   "end": 73.448,
+   "frames": [
+    "frames/S014_0.jpg"
+   ],
+   "facts": {
+    "who": "a person's hands",
+    "where": "a dark wooden surface",
+    "action": "a person's hands are touching a dark wooden surface, with one hand resting on the edge and the other hand near the side",
+    "text": "",
+    "key": "a person's hands are touching a dark wooden surface, with one hand resting on the edge and the other hand near the side",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S015",
+   "start": 73.448,
+   "end": 80.935,
+   "frames": [
+    "frames/S015_0.jpg",
+    "frames/S015_1.jpg"
+   ],
+   "facts": {
+    "who": "a person with hands visible",
+    "where": "inside a dark wooden drawer",
+    "action": "a person pulls open a drawer, revealing various items inside, including a large round tin and small containers",
+    "text": "WHITE CASTLE BUTTER COOKIES",
+    "key": "a large round tin labeled 'WHITE CASTLE BUTTER COOKIES' is visible inside the drawer",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S016",
+   "start": 80.935,
+   "end": 88.422,
+   "frames": [
+    "frames/S016_0.jpg",
+    "frames/S016_1.jpg"
+   ],
+   "facts": {
+    "who": "two hands",
+    "where": "inside a drawer",
+    "action": "a hand reaches for a small white jar, while the other hand holds a plastic-wrapped item",
+    "text": "WHITE CASTLE",
+    "key": "a large round tin of White Castle beef patties is visible in the drawer",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S017",
+   "start": 88.422,
+   "end": 95.137,
+   "frames": [
+    "frames/S017_0.jpg",
+    "frames/S017_1.jpg"
+   ],
+   "facts": {
+    "who": "a person's hands",
+    "where": "a dark tabletop, near a window",
+    "action": "a person holds a round tin of White Castle food, rotating it slightly to show the label",
+    "text": "WHITE CASTLE",
+    "key": "a person is holding and rotating a round tin of White Castle food",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S018",
+   "start": 95.137,
+   "end": 101.852,
+   "frames": [
+    "frames/S018_0.jpg",
+    "frames/S018_1.jpg"
+   ],
+   "facts": {
+    "who": "a person's hands",
+    "where": "a table near a window",
+    "action": "a person is opening a metal tin container by lifting its lid",
+    "text": "",
+    "key": "a person is opening a metal tin container by lifting its lid",
+    "confidence": 0.98
+   }
+  },
+  {
+   "id": "S019",
+   "start": 101.852,
+   "end": 106.836,
+   "frames": [
+    "frames/S019_0.jpg"
+   ],
+   "facts": {
+    "who": "a person's hands",
+    "where": "a dimly lit room",
+    "action": "a person holds a blister pack of pills in one hand and a metal tin with papers inside in the other hand",
+    "text": "睡覺 喝茶 午餐 晚餐 睡前",
+    "key": "a person is holding a blister pack of pills and a metal tin containing papers with Chinese characters",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S020",
+   "start": 106.836,
+   "end": 111.82,
+   "frames": [
+    "frames/S020_0.jpg"
+   ],
+   "facts": {
+    "who": "a hand",
+    "where": "a dark indoor setting",
+    "action": "a hand holds the edge of a round metal container with a paper inside",
+    "text": "不要動",
+    "key": "a hand is holding a round metal container with a paper inside, and the Chinese text '不要動' (Do not move) is heard as dialogue",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S021",
+   "start": 111.82,
+   "end": 116.95,
+   "frames": [
+    "frames/S021_0.jpg",
+    "frames/S021_1.jpg"
+   ],
+   "facts": {
+    "who": "a person with hands",
+    "where": "a dark surface",
+    "action": "a person is placing a red tag with a red string into a metal tin, then withdrawing their hand",
+    "text": "",
+    "key": "a red tag with a red string is placed inside a metal tin",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S022",
+   "start": 116.95,
+   "end": 122.623,
+   "frames": [
+    "frames/S022_0.jpg",
+    "frames/S022_1.jpg"
+   ],
+   "facts": {
+    "who": "a young man with dark hair, wearing a white t-shirt and a black beaded necklace with a gold cross pendant",
+    "where": "a room with a wooden wardrobe in the background",
+    "action": "the man is holding a small red object in his hands and looking down at it",
+    "text": "",
+    "key": "the man is holding a small red object while looking down at it",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S023",
+   "start": 122.623,
+   "end": 125.459,
+   "frames": [
+    "frames/S023_0.jpg"
+   ],
+   "facts": {
+    "who": "none",
+    "where": "dark setting",
+    "action": "a hand holds a small red pouch with gold Chinese characters and dragon designs",
+    "text": "白拱天宮天上聖母",
+    "key": "a red pouch with gold Chinese characters and dragon designs is held in a hand",
+    "confidence": 0.9
+   }
+  },
+  {
+   "id": "S024",
+   "start": 125.459,
+   "end": 132.674,
+   "frames": [
+    "frames/S024_0.jpg",
+    "frames/S024_1.jpg"
+   ],
+   "facts": {
+    "who": "a young man with short dark hair, wearing a white t-shirt and a necklace with a cross pendant",
+    "where": "an indoor room with dim lighting, a wooden door and a wooden cabinet visible in the background",
+    "action": "the young man is holding a red string or cord in his right hand and appears to be examining or manipulating it",
+    "text": "",
+    "key": "The young man is holding and examining a red string in a dimly lit room.",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S025",
+   "start": 132.674,
+   "end": 137.179,
+   "frames": [
+    "frames/S025_0.jpg"
+   ],
+   "facts": {
+    "who": "a young man with acne on his face, shown in profile",
+    "where": "a dimly lit indoor setting",
+    "action": "The young man is looking off to the side with a focused expression.",
+    "text": "",
+    "key": "The young man's face is shown in profile, with visible acne and a focused gaze.",
+    "confidence": 0.95
+   }
+  },
+  {
+   "id": "S026",
+   "start": 137.179,
+   "end": 140.015,
+   "frames": [
+    "frames/S026_0.jpg"
+   ],
+   "facts": {
+    "who": "none",
+    "where": "a dimly lit desk with a computer setup",
+    "action": "a hand is positioned over a keyboard, with a computer mouse on a mousepad in front of it",
+    "text": "",
+    "key": "a hand is typing on a keyboard next to a computer mouse on a mousepad",
+    "confidence": 0.95
+   }
+  }
+ ],
+ "dialogue": [
+  {
+   "start": 20.820000000000004,
+   "end": 23.2,
+   "text": "我們在天上的父王"
+  },
+  {
+   "start": 24.060000000000006,
+   "end": 31.46,
+   "text": "願你將喜樂賜福給阿嬤 讓在天國的阿嬤過得幸福快樂"
+  },
+  {
+   "start": 32.08,
+   "end": 36.16,
+   "text": "沒有痛苦沒有悲傷 阿奈"
+  },
+  {
+   "start": 48.699999999999996,
+   "end": 51.7,
+   "text": "小時候阿嬤告訴我"
+  },
+  {
+   "start": 52.44,
+   "end": 54.2,
+   "text": "不能拿香拜拜"
+  },
+  {
+   "start": 85.52,
+   "end": 86.92,
+   "text": "请"
+  },
+  {
+   "start": 113.32,
+   "end": 116.12,
+   "text": "不要動"
+  },
+  {
+   "start": 132.01999999999998,
+   "end": 135.14,
+   "text": "重水油"
+  },
+  {
+   "start": 137.36,
+   "end": 139.92,
+   "text": "中文幕志愿"
+  }
+ ],
+ "dialogue_asr": [
+  {
+   "start": 20.820000000000004,
+   "end": 23.02,
+   "text": "我們在天上的父王"
+  },
+  {
+   "start": 24.060000000000006,
+   "end": 26.94,
+   "text": "願你將喜樂賜福給阿嬤"
+  },
+  {
+   "start": 27.659999999999997,
+   "end": 31.46,
+   "text": "讓在天國的阿嬤過得幸福快樂"
+  },
+  {
+   "start": 32.08,
+   "end": 34.74,
+   "text": "沒有痛苦沒有悲傷"
+  },
+  {
+   "start": 35.44,
+   "end": 36.16,
+   "text": "阿奈"
+  },
+  {
+   "start": 48.699999999999996,
+   "end": 51.52,
+   "text": "小時候阿嬤告訴我"
+  },
+  {
+   "start": 52.44,
+   "end": 53.8,
+   "text": "不能拿香拜拜"
+  },
+  {
+   "start": 85.52,
+   "end": 86.92,
+   "text": "请"
+  },
+  {
+   "start": 113.32,
+   "end": 116.12,
+   "text": "不要動"
+  },
+  {
+   "start": 132.01999999999998,
+   "end": 135.14,
+   "text": "重水油"
+  },
+  {
+   "start": 137.36,
+   "end": 139.92,
+   "text": "中文幕志愿"
+  }
+ ],
+ "speech_vad": [
+  {
+   "start": 21.3,
+   "end": 23.2
+  },
+  {
+   "start": 24.5,
+   "end": 27.1
+  },
+  {
+   "start": 27.8,
+   "end": 31.2
+  },
+  {
+   "start": 32.5,
+   "end": 33.3
+  },
+  {
+   "start": 34.0,
+   "end": 35.1
+  },
+  {
+   "start": 49.1,
+   "end": 50.1
+  },
+  {
+   "start": 50.6,
+   "end": 51.7
+  },
+  {
+   "start": 52.7,
+   "end": 54.2
+  }
+ ],
+ "gaps": [
+  {
+   "start": 0.3,
+   "end": 20.52
+  },
+  {
+   "start": 36.41,
+   "end": 48.4
+  },
+  {
+   "start": 54.45,
+   "end": 85.22
+  },
+  {
+   "start": 87.17,
+   "end": 113.02
+  },
+  {
+   "start": 116.37,
+   "end": 131.72
+  },
+  {
+   "start": 135.39,
+   "end": 137.06
+  }
+ ],
+ "slots": [
+  {
+   "start": 0.3,
+   "end": 4.546,
+   "shots": [
+    "S001"
+   ],
+   "prev": []
+  },
+  {
+   "start": 4.546,
+   "end": 7.716,
+   "shots": [
+    "S002"
+   ],
+   "prev": [
+    "S001"
+   ]
+  },
+  {
+   "start": 7.716,
+   "end": 10.219,
+   "shots": [
+    "S003"
+   ],
+   "prev": [
+    "S002"
+   ]
+  },
+  {
+   "start": 10.219,
+   "end": 15.307,
+   "shots": [
+    "S004"
+   ],
+   "prev": [
+    "S003"
+   ]
+  },
+  {
+   "start": 15.307,
+   "end": 20.52,
+   "shots": [
+    "S005"
+   ],
+   "prev": [
+    "S004"
+   ]
+  },
+  {
+   "start": 36.41,
+   "end": 41.792,
+   "shots": [
+    "S008"
+   ],
+   "prev": [
+    "S007"
+   ]
+  },
+  {
+   "start": 41.792,
+   "end": 48.4,
+   "shots": [
+    "S009"
+   ],
+   "prev": [
+    "S008"
+   ]
+  },
+  {
+   "start": 54.45,
+   "end": 62.604,
+   "shots": [
+    "S010",
+    "S011"
+   ],
+   "prev": []
+  },
+  {
+   "start": 62.604,
+   "end": 69.528,
+   "shots": [
+    "S012"
+   ],
+   "prev": [
+    "S011"
+   ]
+  },
+  {
+   "start": 69.528,
+   "end": 73.448,
+   "shots": [
+    "S013",
+    "S014"
+   ],
+   "prev": [
+    "S012"
+   ]
+  },
+  {
+   "start": 73.448,
+   "end": 80.935,
+   "shots": [
+    "S015"
+   ],
+   "prev": [
+    "S013",
+    "S014"
+   ]
+  },
+  {
+   "start": 80.935,
+   "end": 85.22,
+   "shots": [
+    "S016"
+   ],
+   "prev": [
+    "S015"
+   ]
+  },
+  {
+   "start": 87.17,
+   "end": 95.137,
+   "shots": [
+    "S016",
+    "S017"
+   ],
+   "prev": []
+  },
+  {
+   "start": 95.137,
+   "end": 101.852,
+   "shots": [
+    "S018"
+   ],
+   "prev": [
+    "S017"
+   ]
+  },
+  {
+   "start": 101.852,
+   "end": 106.836,
+   "shots": [
+    "S019"
+   ],
+   "prev": [
+    "S018"
+   ]
+  },
+  {
+   "start": 106.836,
+   "end": 113.02,
+   "shots": [
+    "S020",
+    "S021"
+   ],
+   "prev": [
+    "S019"
+   ]
+  },
+  {
+   "start": 116.37,
+   "end": 122.623,
+   "shots": [
+    "S021",
+    "S022"
+   ],
+   "prev": []
+  },
+  {
+   "start": 122.623,
+   "end": 125.459,
+   "shots": [
+    "S023"
+   ],
+   "prev": [
+    "S022"
+   ]
+  },
+  {
+   "start": 125.459,
+   "end": 131.72,
+   "shots": [
+    "S024"
+   ],
+   "prev": [
+    "S023"
+   ]
+  },
+  {
+   "start": 135.39,
+   "end": 137.06,
+   "shots": [
+    "S025"
+   ],
+   "prev": []
+  }
+ ],
+ "lines": [
+  {
+   "id": "AD001",
+   "start": 0.3,
+   "window_end": 4.546,
+   "avail": 4.25,
+   "text": "穿灰色運動衫配金十字架項鍊",
+   "duration": 3.11,
+   "speed": 1.0,
+   "budget_words": 16,
+   "attempts": [
+    {
+     "text": "一件灰色運動衫，胸前有白色字母「HCO」，搭配一條金色十字架項鍊。",
+     "seconds": 6.4,
+     "fit": false,
+     "speed": null,
+     "reason": "overflow 6.4s > 4.2s"
+    },
+    {
+     "text": "穿灰色運動衫配金十字架項鍊",
+     "seconds": 3.11,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S001"
+   ],
+   "text_read": [
+    "HCO"
+   ],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD001.wav",
+   "verify_shots": [
+    "S001"
+   ]
+  },
+  {
+   "id": "AD002",
+   "start": 4.55,
+   "window_end": 7.716,
+   "avail": 3.17,
+   "text": "海浪拍打沙灘退潮留濕沙",
+   "duration": 2.48,
+   "speed": 1.0,
+   "budget_words": 12,
+   "attempts": [
+    {
+     "text": "海浪拍打沙灘，潮水退去留下濕沙。",
+     "seconds": 3.61,
+     "fit": false,
+     "speed": null,
+     "reason": "overflow 3.6s > 3.2s"
+    },
+    {
+     "text": "海浪拍打沙灘退潮留濕沙",
+     "seconds": 2.48,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S002"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true,
+    "unsupported": []
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD002.wav",
+   "verify_shots": [
+    "S002"
+   ]
+  },
+  {
+   "id": "AD003",
+   "start": 10.22,
+   "window_end": 15.307,
+   "avail": 5.09,
+   "text": "穿灰T恤的年輕人低頭看沙地",
+   "duration": 2.79,
+   "speed": 1.0,
+   "budget_words": 20,
+   "attempts": [
+    {
+     "text": "穿灰T恤的年輕人低頭看沙地",
+     "seconds": 2.79,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S004"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD003.wav",
+   "verify_shots": [
+    "S004"
+   ]
+  },
+  {
+   "id": "AD004",
+   "start": 15.31,
+   "window_end": 20.52,
+   "avail": 5.21,
+   "text": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊",
+   "duration": 3.89,
+   "speed": 1.0,
+   "budget_words": 20,
+   "attempts": [
+    {
+     "text": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊",
+     "seconds": 3.89,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S005"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD004.wav",
+   "verify_shots": [
+    "S005"
+   ]
+  },
+  {
+   "id": "AD005",
+   "start": 41.79,
+   "window_end": 48.4,
+   "avail": 6.61,
+   "text": "阿嬤的話字卡浮現在海邊潮池與遠方船影上",
+   "duration": 4.43,
+   "speed": 1.0,
+   "budget_words": 26,
+   "attempts": [
+    {
+     "text": "阿嬤的話字卡浮現在海邊潮池與遠方船影上",
+     "seconds": 4.43,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S009"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD005.wav",
+   "verify_shots": [
+    "S009"
+   ]
+  },
+  {
+   "id": "AD006",
+   "start": 54.45,
+   "window_end": 62.604,
+   "avail": 8.15,
+   "text": "手轉門把，木門緩緩開啟",
+   "duration": 2.6,
+   "speed": 1.0,
+   "budget_words": 32,
+   "attempts": [
+    {
+     "text": "手轉門把，木門緩緩開啟",
+     "seconds": 2.6,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S010",
+    "S011"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true,
+    "unsupported": []
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD006.wav",
+   "verify_shots": [
+    "S010",
+    "S011"
+   ]
+  },
+  {
+   "id": "AD007",
+   "start": 62.6,
+   "window_end": 69.528,
+   "avail": 6.92,
+   "text": "手輕放於深色粗糙桌面邊緣，指縫微張",
+   "duration": 4.04,
+   "speed": 1.0,
+   "budget_words": 27,
+   "attempts": [
+    {
+     "text": "手輕放於深色粗糙桌面邊緣，指縫微張",
+     "seconds": 4.04,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S012"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD007.wav",
+   "verify_shots": [
+    "S012"
+   ]
+  },
+  {
+   "id": "AD008",
+   "start": 69.53,
+   "window_end": 73.448,
+   "avail": 3.92,
+   "text": "手輕觸深色木桌邊緣，指縫微張",
+   "duration": 3.35,
+   "speed": 1.0,
+   "budget_words": 15,
+   "attempts": [
+    {
+     "text": "手輕觸深色木桌邊緣，指縫微張",
+     "seconds": 3.35,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S013",
+    "S014"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true,
+    "unsupported": []
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD008.wav",
+   "verify_shots": [
+    "S013",
+    "S014"
+   ]
+  },
+  {
+   "id": "AD009",
+   "start": 73.68,
+   "window_end": 80.935,
+   "avail": 7.25,
+   "text": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。",
+   "duration": 6.39,
+   "speed": 1.0,
+   "budget_words": 29,
+   "attempts": [
+    {
+     "text": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。",
+     "seconds": 6.39,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S015"
+   ],
+   "text_read": [
+    "WHITE CASTLE BUTTER COOKIES"
+   ],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD009.wav",
+   "verify_shots": [
+    "S015"
+   ]
+  },
+  {
+   "id": "AD010",
+   "start": 80.94,
+   "window_end": 85.22,
+   "avail": 4.28,
+   "text": "白城堡牛肉餅鐵盒在抽屜內",
+   "duration": 2.65,
+   "speed": 1.0,
+   "budget_words": 17,
+   "attempts": [
+    {
+     "text": "字幕：WHITE CASTLE。抽屜內有大圓鐵盒與小罐，鐵盒上寫著「白城堡牛肉餅」。",
+     "seconds": 6.49,
+     "fit": false,
+     "speed": null,
+     "reason": "overflow 6.5s > 4.3s"
+    },
+    {
+     "text": "白城堡牛肉餅鐵盒在抽屜內",
+     "seconds": 2.65,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S016"
+   ],
+   "text_read": [
+    "WHITE CASTLE"
+   ],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD010.wav",
+   "verify_shots": [
+    "S016"
+   ]
+  },
+  {
+   "id": "AD011",
+   "start": 87.17,
+   "window_end": 95.137,
+   "avail": 7.97,
+   "text": "手輕轉鐵盒，露出「白城堡」字樣",
+   "duration": 3.16,
+   "speed": 1.0,
+   "budget_words": 31,
+   "attempts": [
+    {
+     "text": "手輕轉鐵盒，露出「白城堡」字樣",
+     "seconds": 3.16,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S016",
+    "S017"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true,
+    "unsupported": []
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD011.wav",
+   "verify_shots": [
+    "S016",
+    "S017"
+   ]
+  },
+  {
+   "id": "AD012",
+   "start": 95.14,
+   "window_end": 101.852,
+   "avail": 6.72,
+   "text": "手掀開鐵盒蓋，露出裡面的奶油餅乾。",
+   "duration": 3.54,
+   "speed": 1.0,
+   "budget_words": 26,
+   "attempts": [
+    {
+     "text": "手掀開鐵盒蓋，露出裡面的奶油餅乾。",
+     "seconds": 3.54,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S018"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD012.wav",
+   "verify_shots": [
+    "S018"
+   ]
+  },
+  {
+   "id": "AD013",
+   "start": 101.85,
+   "window_end": 106.836,
+   "avail": 4.98,
+   "text": "手拿藥片包與鐵盒，盒內紙條列明作息時刻。",
+   "duration": 4.33,
+   "speed": 1.0,
+   "budget_words": 19,
+   "attempts": [
+    {
+     "text": "手拿藥片包與鐵盒，盒內有紙張，紙上寫著睡覺、喝茶、午餐、晚餐、睡前。",
+     "seconds": 7.02,
+     "fit": false,
+     "speed": null,
+     "reason": "overflow 7.0s > 5.0s"
+    },
+    {
+     "text": "手拿藥片包與鐵盒，盒內紙條列明作息時刻。",
+     "seconds": 4.33,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S019"
+   ],
+   "text_read": [
+    "睡覺 喝茶 午餐 晚餐 睡前"
+   ],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD013.wav",
+   "verify_shots": [
+    "S019"
+   ]
+  },
+  {
+   "id": "AD014",
+   "start": 106.98,
+   "window_end": 113.02,
+   "avail": 6.04,
+   "text": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。",
+   "duration": 5.08,
+   "speed": 1.0,
+   "budget_words": 24,
+   "attempts": [
+    {
+     "text": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。",
+     "seconds": 5.08,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S020",
+    "S021"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true,
+    "unsupported": []
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD014.wav",
+   "verify_shots": [
+    "S020",
+    "S021"
+   ]
+  },
+  {
+   "id": "AD015",
+   "start": 116.37,
+   "window_end": 122.623,
+   "avail": 6.25,
+   "text": "手握紅色小物，低頭凝視。",
+   "duration": 2.43,
+   "speed": 1.0,
+   "budget_words": 25,
+   "attempts": [
+    {
+     "text": "手握紅色小物，低頭凝視。",
+     "seconds": 2.43,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S021",
+    "S022"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD015.wav",
+   "verify_shots": [
+    "S021",
+    "S022"
+   ]
+  },
+  {
+   "id": "AD016",
+   "start": 122.62,
+   "window_end": 125.459,
+   "avail": 2.84,
+   "text": "手握紅包，包有金字龍紋。",
+   "duration": 2.41,
+   "speed": 1.0,
+   "budget_words": 11,
+   "attempts": [
+    {
+     "text": "手握紅色小包，包上有金字與龍紋。",
+     "seconds": null,
+     "fit": false,
+     "reason": "text gate: on-screen text not read"
+    },
+    {
+     "text": "手握紅包，包有金字龍紋。",
+     "seconds": 2.41,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S023"
+   ],
+   "text_read": [
+    "白拱天宮天上聖母"
+   ],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD016.wav",
+   "verify_shots": [
+    "S023"
+   ]
+  },
+  {
+   "id": "AD017",
+   "start": 125.83,
+   "window_end": 131.72,
+   "avail": 5.89,
+   "text": "年輕男子握紅繩，低頭細看。",
+   "duration": 2.74,
+   "speed": 1.0,
+   "budget_words": 23,
+   "attempts": [
+    {
+     "text": "年輕男子握紅繩，低頭細看。",
+     "seconds": 2.74,
+     "fit": true,
+     "speed": 1.0,
+     "reason": "fits"
+    }
+   ],
+   "status": "fit",
+   "shots": [
+    "S024"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true
+   },
+   "flags": [],
+   "review": "pending",
+   "audio": "lines/AD017.wav",
+   "verify_shots": [
+    "S024"
+   ]
+  },
+  {
+   "id": "AD018",
+   "start": 135.39,
+   "window_end": 137.06,
+   "avail": 1.67,
+   "text": "青年男子凝視旁邊",
+   "duration": null,
+   "speed": 1.0,
+   "budget_words": 6,
+   "attempts": [
+    {
+     "text": "青年男子側臉，臉頰有青春痘，眼神專注望向一旁。",
+     "seconds": 5.2,
+     "fit": false,
+     "speed": null,
+     "reason": "overflow 5.2s > 1.7s"
+    },
+    {
+     "text": "青年男子專注凝視一旁",
+     "seconds": 2.35,
+     "fit": false,
+     "speed": null,
+     "reason": "overflow 2.3s > 1.7s"
+    },
+    {
+     "text": "青年男子凝視一旁",
+     "seconds": 1.81,
+     "fit": false,
+     "speed": null,
+     "reason": "overflow 1.8s > 1.7s"
+    },
+    {
+     "text": "青年男子凝視旁邊",
+     "seconds": 1.93,
+     "fit": false,
+     "speed": null,
+     "reason": "overflow 1.9s > 1.7s"
+    }
+   ],
+   "status": "overflow",
+   "shots": [
+    "S025"
+   ],
+   "text_read": [],
+   "verify": {
+    "supported": true
+   },
+   "flags": [
+    "does not fit: needs extended AD (pause) or a cut"
+   ],
+   "review": "pending",
+   "verify_shots": [
+    "S025"
+   ]
+  }
+ ],
+ "metrics": {
+  "clip_seconds": 140.0,
+  "shots": 26,
+  "dialogue_spans": 9,
+  "gaps": 6,
+  "speech_seconds_asr": 26.3,
+  "speech_seconds_vad": 13.4,
+  "speech_seconds_merged": 28.5,
+  "usable_gap_seconds": 105.8,
+  "slots": 20,
+  "lines": 18,
+  "lines_placed": 17,
+  "skipped_repeats": 2,
+  "first_try_fit": 12,
+  "fit_after_loop": 17,
+  "mean_attempts": 1.44,
+  "rewrites": 8,
+  "ad_seconds": 59.4,
+  "ad_overlap_with_detected_dialogue_s": 0.0,
+  "flagged_lines": 1,
+  "unsupported_flags": 0,
+  "rescued_by_speed": 0,
+  "rescued_by_rewrite": 4,
+  "style_or_text_gate_rewrites": 1,
+  "shots_covered": 20,
+  "processing_seconds": 89.0,
+  "seconds_per_content_minute": 38.1,
+  "stages": {
+   "prepare": 2.68,
+   "shots": 2.55,
+   "dialogue_map": 5.8,
+   "load_models": 3.3,
+   "shot_facts": 50.47,
+   "write_fit_verify": 18.04,
+   "verify": 4.66,
+   "mix": 1.45,
+   "injected_error_test": 16.96
+  },
+  "llm": {
+   "calls": 73,
+   "seconds": 68.8,
+   "prompt_tokens": 36293,
+   "gen_tokens": 3091
+  },
+  "tts": {
+   "calls": 42,
+   "audio_seconds": 159.8
+  },
+  "mlx_peak_memory_gb": 14.0,
+  "injected_error_test": {
+   "clean_lines": 15,
+   "false_alarms_on_clean_lines": 0,
+   "verdict_missing": 0,
+   "cases": [
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD001",
+     "original": "穿灰色運動衫配金十字架項鍊",
+     "corrupted": "穿灰色運動衫配金十字架項鍊，手裡拿著一把紅傘。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "穿灰色運動衫配金十字架項鍊，手裡拿著一把紅傘。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD001",
+     "original": "穿灰色運動衫配金十字架項鍊",
+     "corrupted": "穿灰T恤的年輕人低頭看沙地",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "穿灰T恤的年輕人低頭看沙地"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD002",
+     "original": "海浪拍打沙灘退潮留濕沙",
+     "corrupted": "海浪拍打沙灘退潮留濕沙，天空下著大雨。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "天空下著大雨。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD002",
+     "original": "海浪拍打沙灘退潮留濕沙",
+     "corrupted": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "穿灰T恤配黑珠鍊金十字架項鍊",
+      "站海邊"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD003",
+     "original": "穿灰T恤的年輕人低頭看沙地",
+     "corrupted": "穿灰T恤的年輕人低頭看沙地，身處擁擠的火車站。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "穿灰T恤的年輕人低頭看沙地",
+      "身處擁擠的火車站"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD003",
+     "original": "穿灰T恤的年輕人低頭看沙地",
+     "corrupted": "阿嬤的話字卡浮現在海邊潮池與遠方船影上",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "阿嬤的話字卡浮現在海邊潮池與遠方船影上"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD004",
+     "original": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊",
+     "corrupted": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊。招牌寫著「出口」。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "招牌寫著「出口」。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD004",
+     "original": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊",
+     "corrupted": "手轉門把，木門緩緩開啟",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手轉門把，木門緩緩開啟"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD005",
+     "original": "阿嬤的話字卡浮現在海邊潮池與遠方船影上",
+     "corrupted": "阿嬤的話字卡浮現在海邊潮池與遠方船影上，身旁有一匹白馬。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "身旁有一匹白馬。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD005",
+     "original": "阿嬤的話字卡浮現在海邊潮池與遠方船影上",
+     "corrupted": "手輕放於深色粗糙桌面邊緣，指縫微張",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手輕放於深色粗糙桌面邊緣，指縫微張"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD006",
+     "original": "手轉門把，木門緩緩開啟",
+     "corrupted": "手轉門把，木門緩緩開啟，手裡拿著一把紅傘。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手裡拿著一把紅傘。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD006",
+     "original": "手轉門把，木門緩緩開啟",
+     "corrupted": "手輕觸深色木桌邊緣，指縫微張",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手輕觸深色木桌邊緣，指縫微張"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD007",
+     "original": "手輕放於深色粗糙桌面邊緣，指縫微張",
+     "corrupted": "手輕放於深色粗糙桌面邊緣，指縫微張，天空下著大雨。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "天空下著大雨。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD007",
+     "original": "手輕放於深色粗糙桌面邊緣，指縫微張",
+     "corrupted": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD008",
+     "original": "手輕觸深色木桌邊緣，指縫微張",
+     "corrupted": "手輕觸深色木桌邊緣，指縫微張，身處擁擠的火車站。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "身處擁擠的火車站"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD008",
+     "original": "手輕觸深色木桌邊緣，指縫微張",
+     "corrupted": "白城堡牛肉餅鐵盒在抽屜內",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "白城堡牛肉餅鐵盒在抽屜內"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD009",
+     "original": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。",
+     "corrupted": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。招牌寫著「出口」。",
+     "caught": false,
+     "verdict_missing": false,
+     "unsupported": []
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD009",
+     "original": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。",
+     "corrupted": "手輕轉鐵盒，露出「白城堡」字樣",
+     "caught": false,
+     "verdict_missing": false,
+     "unsupported": []
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD010",
+     "original": "白城堡牛肉餅鐵盒在抽屜內",
+     "corrupted": "白城堡牛肉餅鐵盒在抽屜內，身旁有一匹白馬。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "身旁有一匹白馬。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD010",
+     "original": "白城堡牛肉餅鐵盒在抽屜內",
+     "corrupted": "手掀開鐵盒蓋，露出裡面的奶油餅乾。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手掀開鐵盒蓋，露出裡面的奶油餅乾。"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD011",
+     "original": "手輕轉鐵盒，露出「白城堡」字樣",
+     "corrupted": "手輕轉鐵盒，露出「白城堡」字樣，手裡拿著一把紅傘。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手裡拿著一把紅傘。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD011",
+     "original": "手輕轉鐵盒，露出「白城堡」字樣",
+     "corrupted": "手拿藥片包與鐵盒，盒內紙條列明作息時刻。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手拿藥片包與鐵盒",
+      "盒內紙條列明作息時刻"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD012",
+     "original": "手掀開鐵盒蓋，露出裡面的奶油餅乾。",
+     "corrupted": "手掀開鐵盒蓋，露出裡面的奶油餅乾，天空下著大雨。",
+     "caught": false,
+     "verdict_missing": false,
+     "unsupported": []
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD012",
+     "original": "手掀開鐵盒蓋，露出裡面的奶油餅乾。",
+     "corrupted": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手將紅色平安符綁繩的標籤放進鐵盒",
+      "隨即抽手"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD013",
+     "original": "手拿藥片包與鐵盒，盒內紙條列明作息時刻。",
+     "corrupted": "手拿藥片包與鐵盒，盒內紙條列明作息時刻，身處擁擠的火車站。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "身處擁擠的火車站"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD013",
+     "original": "手拿藥片包與鐵盒，盒內紙條列明作息時刻。",
+     "corrupted": "手握紅色小物，低頭凝視。",
+     "caught": false,
+     "verdict_missing": false,
+     "unsupported": []
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD014",
+     "original": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。",
+     "corrupted": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。招牌寫著「出口」。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "招牌寫著「出口」"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD014",
+     "original": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。",
+     "corrupted": "手握紅包，包有金字龍紋。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "手握紅包，包有金字龍紋。"
+     ]
+    },
+    {
+     "set": "easy",
+     "kind": "append/swap",
+     "line": "AD015",
+     "original": "手握紅色小物，低頭凝視。",
+     "corrupted": "手握紅色小物，低頭凝視，身旁有一匹白馬。",
+     "caught": true,
+     "verdict_missing": false,
+     "unsupported": [
+      "身旁有一匹白馬。"
+     ]
+    },
+    {
+     "set": "hard",
+     "kind": "neighbour",
+     "line": "AD015",
+     "original": "手握紅色小物，低頭凝視。",
+     "corrupted": "年輕男子握紅繩，低頭細看。",
+     "caught": false,
+     "verdict_missing": false,
+     "unsupported": []
+    }
+   ],
+   "easy": {
+    "planted": 15,
+    "caught": 13,
+    "catch_rate": 0.87
+   },
+   "hard": {
+    "planted": 15,
+    "caught": 12,
+    "catch_rate": 0.8,
+    "by_kind": {
+     "noun": "0/0",
+     "verb": "0/0",
+     "character": "0/0",
+     "neighbour": "12/15"
+    }
+   },
+   "planted": 15,
+   "caught": 13,
+   "catch_rate": 0.87
+  }
+ }
+}

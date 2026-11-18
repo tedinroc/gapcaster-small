@@ -22,6 +22,7 @@ def test_budget_by_language():
 
 def test_traditional_and_tts_conversion():
     assert L.to_traditional("一位老人跪在地上按住胸口喘气") == "一位老人跪在地上按住胸口喘氣"
+    assert L.to_traditional("標籤寫著白城堡黃油餅乾") == "標籤寫著白城堡奶油餅乾"
     assert L.for_tts("字幕：四十年後。", "zh") == "字幕，四十年后。"
     assert L.for_tts("Forty years later.", "en") == "Forty years later."
 
@@ -39,6 +40,8 @@ def test_zh_onscreen_text_is_exempt():
 
 def test_zh_repeat_detection_uses_character_bigrams():
     assert g.is_repeat("老人跪在地上喘氣", ["老人跪在地上喘氣不止"], lang="zh")
+    assert g.is_repeat("鳳蓮舉右手比出和平手勢，嘴角微揚。", ["鳳蓮比出和平手勢，微笑。"], lang="zh")
+    assert "speech-tag" in g.check("鳳蓮笑著說。", 10, lang="zh")[0]
     assert not g.is_repeat("狙擊手舉起步槍瞄準", ["老人跪在地上喘氣"], lang="zh")
 
 

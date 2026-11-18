@@ -1,0 +1,430 @@
+{
+  "clip_seconds": 140.0,
+  "shots": 26,
+  "dialogue_spans": 9,
+  "gaps": 6,
+  "speech_seconds_asr": 26.3,
+  "speech_seconds_vad": 13.4,
+  "speech_seconds_merged": 28.5,
+  "usable_gap_seconds": 105.8,
+  "slots": 20,
+  "lines": 18,
+  "lines_placed": 17,
+  "skipped_repeats": 2,
+  "first_try_fit": 12,
+  "fit_after_loop": 17,
+  "mean_attempts": 1.44,
+  "rewrites": 8,
+  "ad_seconds": 59.4,
+  "ad_overlap_with_detected_dialogue_s": 0.0,
+  "flagged_lines": 1,
+  "unsupported_flags": 0,
+  "rescued_by_speed": 0,
+  "rescued_by_rewrite": 4,
+  "style_or_text_gate_rewrites": 1,
+  "shots_covered": 20,
+  "processing_seconds": 89.0,
+  "seconds_per_content_minute": 38.1,
+  "stages": {
+    "prepare": 2.68,
+    "shots": 2.55,
+    "dialogue_map": 5.8,
+    "load_models": 3.3,
+    "shot_facts": 50.47,
+    "write_fit_verify": 18.04,
+    "verify": 4.66,
+    "mix": 1.45,
+    "injected_error_test": 16.96
+  },
+  "llm": {
+    "calls": 73,
+    "seconds": 68.8,
+    "prompt_tokens": 36293,
+    "gen_tokens": 3091
+  },
+  "tts": {
+    "calls": 42,
+    "audio_seconds": 159.8
+  },
+  "mlx_peak_memory_gb": 14.0,
+  "injected_error_test": {
+    "clean_lines": 15,
+    "false_alarms_on_clean_lines": 0,
+    "verdict_missing": 0,
+    "cases": [
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD001",
+        "original": "穿灰色運動衫配金十字架項鍊",
+        "corrupted": "穿灰色運動衫配金十字架項鍊，手裡拿著一把紅傘。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "穿灰色運動衫配金十字架項鍊，手裡拿著一把紅傘。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD001",
+        "original": "穿灰色運動衫配金十字架項鍊",
+        "corrupted": "穿灰T恤的年輕人低頭看沙地",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "穿灰T恤的年輕人低頭看沙地"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD002",
+        "original": "海浪拍打沙灘退潮留濕沙",
+        "corrupted": "海浪拍打沙灘退潮留濕沙，天空下著大雨。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "天空下著大雨。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD002",
+        "original": "海浪拍打沙灘退潮留濕沙",
+        "corrupted": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "穿灰T恤配黑珠鍊金十字架項鍊",
+          "站海邊"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD003",
+        "original": "穿灰T恤的年輕人低頭看沙地",
+        "corrupted": "穿灰T恤的年輕人低頭看沙地，身處擁擠的火車站。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "穿灰T恤的年輕人低頭看沙地",
+          "身處擁擠的火車站"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD003",
+        "original": "穿灰T恤的年輕人低頭看沙地",
+        "corrupted": "阿嬤的話字卡浮現在海邊潮池與遠方船影上",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "阿嬤的話字卡浮現在海邊潮池與遠方船影上"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD004",
+        "original": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊",
+        "corrupted": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊。招牌寫著「出口」。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "招牌寫著「出口」。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD004",
+        "original": "穿灰T恤配黑珠鍊金十字架項鍊，站海邊",
+        "corrupted": "手轉門把，木門緩緩開啟",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手轉門把，木門緩緩開啟"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD005",
+        "original": "阿嬤的話字卡浮現在海邊潮池與遠方船影上",
+        "corrupted": "阿嬤的話字卡浮現在海邊潮池與遠方船影上，身旁有一匹白馬。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "身旁有一匹白馬。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD005",
+        "original": "阿嬤的話字卡浮現在海邊潮池與遠方船影上",
+        "corrupted": "手輕放於深色粗糙桌面邊緣，指縫微張",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手輕放於深色粗糙桌面邊緣，指縫微張"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD006",
+        "original": "手轉門把，木門緩緩開啟",
+        "corrupted": "手轉門把，木門緩緩開啟，手裡拿著一把紅傘。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手裡拿著一把紅傘。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD006",
+        "original": "手轉門把，木門緩緩開啟",
+        "corrupted": "手輕觸深色木桌邊緣，指縫微張",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手輕觸深色木桌邊緣，指縫微張"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD007",
+        "original": "手輕放於深色粗糙桌面邊緣，指縫微張",
+        "corrupted": "手輕放於深色粗糙桌面邊緣，指縫微張，天空下著大雨。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "天空下著大雨。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD007",
+        "original": "手輕放於深色粗糙桌面邊緣，指縫微張",
+        "corrupted": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD008",
+        "original": "手輕觸深色木桌邊緣，指縫微張",
+        "corrupted": "手輕觸深色木桌邊緣，指縫微張，身處擁擠的火車站。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "身處擁擠的火車站"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD008",
+        "original": "手輕觸深色木桌邊緣，指縫微張",
+        "corrupted": "白城堡牛肉餅鐵盒在抽屜內",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "白城堡牛肉餅鐵盒在抽屜內"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD009",
+        "original": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。",
+        "corrupted": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。招牌寫著「出口」。",
+        "caught": false,
+        "verdict_missing": false,
+        "unsupported": []
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD009",
+        "original": "抽屜被拉開，露出大圓鐵盒與小罐，鐵盒上寫著「白城堡奶油餅乾」。",
+        "corrupted": "手輕轉鐵盒，露出「白城堡」字樣",
+        "caught": false,
+        "verdict_missing": false,
+        "unsupported": []
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD010",
+        "original": "白城堡牛肉餅鐵盒在抽屜內",
+        "corrupted": "白城堡牛肉餅鐵盒在抽屜內，身旁有一匹白馬。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "身旁有一匹白馬。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD010",
+        "original": "白城堡牛肉餅鐵盒在抽屜內",
+        "corrupted": "手掀開鐵盒蓋，露出裡面的奶油餅乾。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手掀開鐵盒蓋，露出裡面的奶油餅乾。"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD011",
+        "original": "手輕轉鐵盒，露出「白城堡」字樣",
+        "corrupted": "手輕轉鐵盒，露出「白城堡」字樣，手裡拿著一把紅傘。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手裡拿著一把紅傘。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD011",
+        "original": "手輕轉鐵盒，露出「白城堡」字樣",
+        "corrupted": "手拿藥片包與鐵盒，盒內紙條列明作息時刻。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手拿藥片包與鐵盒",
+          "盒內紙條列明作息時刻"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD012",
+        "original": "手掀開鐵盒蓋，露出裡面的奶油餅乾。",
+        "corrupted": "手掀開鐵盒蓋，露出裡面的奶油餅乾，天空下著大雨。",
+        "caught": false,
+        "verdict_missing": false,
+        "unsupported": []
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD012",
+        "original": "手掀開鐵盒蓋，露出裡面的奶油餅乾。",
+        "corrupted": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手將紅色平安符綁繩的標籤放進鐵盒",
+          "隨即抽手"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD013",
+        "original": "手拿藥片包與鐵盒，盒內紙條列明作息時刻。",
+        "corrupted": "手拿藥片包與鐵盒，盒內紙條列明作息時刻，身處擁擠的火車站。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "身處擁擠的火車站"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD013",
+        "original": "手拿藥片包與鐵盒，盒內紙條列明作息時刻。",
+        "corrupted": "手握紅色小物，低頭凝視。",
+        "caught": false,
+        "verdict_missing": false,
+        "unsupported": []
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD014",
+        "original": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。",
+        "corrupted": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。招牌寫著「出口」。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "招牌寫著「出口」"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD014",
+        "original": "手將紅色平安符綁繩的標籤放進鐵盒，隨即抽手。",
+        "corrupted": "手握紅包，包有金字龍紋。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "手握紅包，包有金字龍紋。"
+        ]
+      },
+      {
+        "set": "easy",
+        "kind": "append/swap",
+        "line": "AD015",
+        "original": "手握紅色小物，低頭凝視。",
+        "corrupted": "手握紅色小物，低頭凝視，身旁有一匹白馬。",
+        "caught": true,
+        "verdict_missing": false,
+        "unsupported": [
+          "身旁有一匹白馬。"
+        ]
+      },
+      {
+        "set": "hard",
+        "kind": "neighbour",
+        "line": "AD015",
+        "original": "手握紅色小物，低頭凝視。",
+        "corrupted": "年輕男子握紅繩，低頭細看。",
+        "caught": false,
+        "verdict_missing": false,
+        "unsupported": []
+      }
+    ],
+    "easy": {
+      "planted": 15,
+      "caught": 13,
+      "catch_rate": 0.87
+    },
+    "hard": {
+      "planted": 15,
+      "caught": 12,
+      "catch_rate": 0.8,
+      "by_kind": {
+        "noun": "0/0",
+        "verb": "0/0",
+        "character": "0/0",
+        "neighbour": "12/15"
+      }
+    },
+    "planted": 15,
+    "caught": 13,
+    "catch_rate": 0.87
+  }
+}

@@ -24,6 +24,7 @@ HARD_ZH = {
     "speculation": r"(似乎|好像|彷彿|仿佛|可能|或許|或许|大概|也許|也许|看起來像|看起来像|應該是|应该是)",
     "first-person": r"(我們|我们|我)",
     "english-word": r"(?<![A-Za-z])[a-z]{3,}(?![A-Za-z])",
+    "speech-tag": r"(笑著說|笑着说|哭著說|開口說|开口说|繼續說|接著說)[。！？]?$",
 }
 SOFT_ZH = {
     "inner-state": r"(傷心|难过|難過|開心|开心|高興|生氣|生气|憤怒|害怕|恐懼|緊張|紧张|擔心|担心|興奮|兴奋|困惑|沮喪|絕望|疲憊|疲惫|無聊|放心|決心)",
@@ -100,10 +101,17 @@ def content_words(line: str, lang: str = "en"):
 
 
 def is_repeat(line: str, recent, threshold: float = 0.5, lang: str = "en") -> bool:
-    """True when a draft mostly re-says one of the last lines (Jaccard on content words)."""
+    """True when a draft mostly re-says one of the last lines (Jaccard or CJK containment on content words)."""
     a = content_words(line, lang)
-    for prev in recent[-2:]:
+    is_cjk = lang == "zh" or bool(re.search(r"[\u4e00-\u9fff]", line))
+    window = recent[-3:] if is_cjk else recent[-2:]
+    for prev in window:
         b = content_words(prev, lang)
-        if a and b and len(a & b) / len(a | b) >= threshold:
+        if not (a and b):
+            continue
+        inter = len(a & b)
+        if inter / len(a | b) >= threshold:
+            return True
+        if is_cjk and min(len(a), len(b)) >= 4 and inter / min(len(a), len(b)) >= 0.6:
             return True
     return False

@@ -95,6 +95,9 @@ def dialogue_near(spans, t0, t1, before=True):
     return nxt[0]["text"][:160] if nxt else ""
 
 
+PROSE_TEXT_DESC = re.compile(r"^(a|an|the)\s+[a-z]+(?:\s+[a-z]+)?\s+(with|of|on|in|showing|containing|filled)\b", re.I)
+
+
 def is_spoken_subtitle(text: str, spans, t0: float, t1: float, lang: str = "en") -> bool:
     """True when on-screen text merely transcribes dialogue already heard around [t0, t1]
     (common in open-captioned Taiwanese and Chinese video; AD guidelines skip open dialogue captions)."""
@@ -200,6 +203,7 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
                 sh_i = by_id[i]
                 t = str((sh_i.get("facts") or {}).get("text", "") or "").strip()
                 if (len(t) >= 3 and t.lower() not in read_text and not CREDITS.search(t)
+                        and not PROSE_TEXT_DESC.search(t)
                         and not is_spoken_subtitle(t, spans, sh_i["start"], sh_i["end"], s.lang)):
                     unread.append(t[:90])
                     read_text.add(t.lower())

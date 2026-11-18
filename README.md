@@ -14,29 +14,30 @@ GapCaster Small drafts an audio-description (AD) track for a finished video. It 
 | Largest model core to the pipeline | 27B | **8B** |
 | Narration languages | English | English and **Mandarin (Traditional Chinese text, `--lang zh`)** |
 | Describer interface | Static `review.html` + CLI export | **Local Web Studio (`gapcaster web`, `127.0.0.1`)** with one-click browser export + static `review.html` |
-| Peak memory on the 2:20 test clips | 33.2 GB | **13.7 GB** (EN, 8B) · **13.6–13.8 GB** (Mandarin, 8B) |
+| Peak memory on the 2:20 test clips | 33.2 GB | **13.7 GB** (EN, 8B) · **13.6–14.0 GB** (Mandarin, 8B) |
 
-## Results on small models (laptop, in-sample + held-out Taiwanese documentary)
+## Results on small models (laptop, in-sample + 2 held-out Taiwanese shorts)
 
-Measured on an Apple M5 Max laptop across two 0:00–2:20 excerpts:
+Measured on an Apple M5 Max laptop across three 0:00–2:20 excerpts:
 - **In-sample development clip**: *Tears of Steel* (Blender Foundation, CC BY 3.0; English dialogue).
-- **Held-out native Taiwanese Mandarin documentary**: *Young Coffee Story* (《【Young Coffee Story】人物紀實短片》，台灣失智症協會 Taiwan Alzheimer's Disease Association / 觀賞故事, CC BY 3.0; Taiwanese Mandarin dialogue with burned-in bilingual open captions and slow cross-dissolves).
+- **Held-out Taiwanese Mandarin narrative drama**: *Grandma's Words* (《阿嬤的話》，國立聯合大學創新育成中心 National United University / dir. Huang Tzu-Yen, CC BY 3.0; sparse Taiwanese Mandarin dialogue followed by 86 s of silent visual storytelling—default blind-listener study clip).
+- **Held-out Taiwanese Mandarin documentary**: *Young Coffee Story* (《【Young Coffee Story】人物紀實短片》，台灣失智症協會 Taiwan Alzheimer's Disease Association / 觀賞故事, CC BY 3.0; interview-heavy documentary with burned-in bilingual open captions and slow cross-dissolves).
 
-| 0:00–2:20 | 27B, EN (*ToS* ref) | **8B, EN (*ToS*)** | **8B, Mandarin (*ToS*)** | **8B, Mandarin (*Young Coffee*, held-out)** |
-|---|---:|---:|---:|---:|
-| Lines that fit their silence | 17/17 | 19/19 | 15/15 | **13/13** |
-| Narration over detected speech | 0.0 s | 0.0 s | 0.0 s | **0.0 s** |
-| Narration over official subtitle cues | 0.4 s | 0.6 s | 0.4 s | n/a (open-captioned source) |
-| Verifier: obvious planted errors flagged | 17/17 | 18/19 | 13/15 | **12/13** |
-| Verifier: subtle in-film errors flagged | 15/17 | 13/19 (verb swaps 0/5) | 11/15 (char/neighbour) | **12/13** (neighbour swaps) |
-| Verifier flags on unmodified lines | 1/17 | 2/19 | 1/15 | **3/13** (all 3 true dissolve-timing leads) |
-| AI-assisted frame check: accurate · minor · wrong | 13 · 4 · 0 | — | 7 · 7 · 1 | **6 · 5 · 2** |
-| Processing per content minute | 125 s | 50 s | 39 s | **39 s** |
-| Peak model memory | 33.2 GB | 13.7 GB | 13.8 GB | **13.6 GB** |
+| 0:00–2:20 | 27B, EN (*ToS* ref) | **8B, EN (*ToS*)** | **8B, Mandarin (*ToS*)** | **8B, Mandarin (*Grandma's Words*, held-out)** | **8B, Mandarin (*Young Coffee*, held-out)** |
+|---|---:|---:|---:|---:|---:|
+| Lines that fit their silence | 17/17 | 19/19 | 15/15 | **17/18** (1 held, not mixed) | **13/13** |
+| Narration over detected speech | 0.0 s | 0.0 s | 0.0 s | **0.0 s** | **0.0 s** |
+| Narration over official subtitle cues | 0.4 s | 0.6 s | 0.4 s | n/a | n/a (open-captioned source) |
+| Verifier: obvious planted errors flagged | 17/17 | 18/19 | 13/15 | **13/15** | **12/13** |
+| Verifier: subtle in-film errors flagged | 15/17 | 13/19 (verb swaps 0/5) | 11/15 (char/neighbour) | **12/15** (neighbour swaps) | **12/13** (neighbour swaps) |
+| Verifier flags on unmodified placed lines | 1/17 | 2/19 | 1/15 | **0/17** | **3/13** (all 3 true dissolve-timing leads) |
+| AI-assisted frame check: accurate · minor · wrong | 13 · 4 · 0 | — | 7 · 7 · 1 | **11 · 5 · 1** | **6 · 5 · 2** |
+| Processing per content minute | 125 s | 50 s | 39 s | **38 s** | **39 s** |
+| Peak model memory | 33.2 GB | 13.7 GB | 13.8 GB | **14.0 GB** | **13.6 GB** |
 
-What the numbers say: across both an English sci-fi film and a held-out Taiwanese documentary, the 8B profile preserves every timing guarantee (100% of placed lines fit; `0.0 s` narration over detected speech) at ~13.6–13.8 GB peak memory. On *Young Coffee Story*, all three verifier flags on unmodified lines (`AD002`, `AD006`, `AD013`) were genuine catches where a slow cross-dissolve moved past or had not yet reached the action described—catching one of the two wrong lines (`AD002`) and leaving one unflagged error (`AD012`, a brief cycling-photo B-roll cut-in inside an interview shot) for the human describer to reject. Per-line notes are in [`eval/spotcheck_tears_of_steel_0-140_zh.csv`](eval/spotcheck_tears_of_steel_0-140_zh.csv) and [`eval/spotcheck_young_coffee_0-140_zh.csv`](eval/spotcheck_young_coffee_0-140_zh.csv). Human describer review and blind and low-vision listener ratings are underway ([listening pilot](https://ad-listen.pages.dev/)).
+What the numbers say: across an English sci-fi film, a held-out Taiwanese narrative drama, and a held-out Taiwanese documentary, the 8B profile preserves every timing guarantee (`0.0 s` narration over detected speech; the one overflowing candidate line `AD018` on *Grandma's Words* is automatically held back from the audio mix) at ~13.6–14.0 GB peak memory. On *Grandma's Words* (where 86 seconds of silent visual discovery follow a brief spoken memory), 16 of 17 placed lines are accurate or minor, while one world-prior mistake (`AD012`, assuming cookies inside a butter-cookie tin before the next shot reveals medication packs and a red temple amulet) illustrates why human describer review remains mandatory. On *Young Coffee Story*, all three verifier flags on unmodified lines (`AD002`, `AD006`, `AD013`) were genuine cross-dissolve timing catches. Per-line notes are in [`eval/spotcheck_grandma_words_0-140_zh.csv`](eval/spotcheck_grandma_words_0-140_zh.csv), [`eval/spotcheck_young_coffee_0-140_zh.csv`](eval/spotcheck_young_coffee_0-140_zh.csv), and [`eval/spotcheck_tears_of_steel_0-140_zh.csv`](eval/spotcheck_tears_of_steel_0-140_zh.csv). Human describer review and blind and low-vision listener ratings are underway ([listening pilot](https://ad-listen.pages.dev/)).
 
-Provenance: the 8B English sample ([`samples/tears-of-steel-0-140-8b`](samples/tears-of-steel-0-140-8b)) was produced with `GAPCASTER_VLM` pointing at Qwen3-VL-8B. Both Mandarin samples ([`samples/tears-of-steel-0-140-zh`](samples/tears-of-steel-0-140-zh) and held-out [`samples/young-coffee-0-140-zh`](samples/young-coffee-0-140-zh)) were produced by this repository with `--lang zh --inject 20`.
+Provenance: the 8B English sample ([`samples/tears-of-steel-0-140-8b`](samples/tears-of-steel-0-140-8b)) was produced with `GAPCASTER_VLM` pointing at Qwen3-VL-8B. All three Mandarin samples ([`samples/grandma-words-0-140-zh`](samples/grandma-words-0-140-zh), [`samples/young-coffee-0-140-zh`](samples/young-coffee-0-140-zh), and [`samples/tears-of-steel-0-140-zh`](samples/tears-of-steel-0-140-zh)) were produced locally by this repository with `--lang zh`.
 
 ### Mandarin narration & Taiwanese documentary adaptations (`--lang zh`)
 

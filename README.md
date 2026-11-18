@@ -10,46 +10,47 @@ GapCaster Small drafts an audio-description (AD) track for a finished video. It 
 
 | | GapCaster (original) | GapCaster Small (this repo) |
 |---|---|---|
-| Default vision-language model | Qwen3.8-27B, 8-bit | **Qwen3-VL-8B-Instruct, 8-bit** (27B kept only as an optional quality reference) |
-| Largest model core to the pipeline | 27B | **8B** |
-| Narration languages | English | English and **Mandarin (Traditional Chinese text, `--lang zh`)** |
+| Default vision-language model | Qwen3.8-27B, 8-bit | **Qwen3.5-9B, 8-bit** (early-fusion ≤10B; **Qwen3-VL-8B-Instruct, 8-bit** also supported; 27B kept only as an optional reference) |
+| Largest model core to the pipeline | 27B | **9B / 8B (≤10B)** |
+| Narration languages | English | English and **Mandarin (Traditional Chinese text + Taiwanese Mandarin `zh-TW` voice, `--lang zh`)** |
 | Describer interface | Static `review.html` + CLI export | **Local Web Studio (`gapcaster web`, `127.0.0.1`)** with one-click browser export + static `review.html` |
-| Peak memory on the 2:20 test clips | 33.2 GB | **13.7 GB** (EN, 8B) · **13.6–14.0 GB** (Mandarin, 8B) |
+| Peak memory on the 2:20 test clips | 33.2 GB | **13.1 GB** (Mandarin, 9B) · **13.7 GB** (EN, 8B) · **13.6–14.0 GB** (Mandarin, 8B) |
 
 ## Results on small models (laptop, in-sample + 2 held-out Taiwanese shorts)
 
 Measured on an Apple M5 Max laptop across three 0:00–2:20 excerpts:
 - **In-sample development clip**: *Tears of Steel* (Blender Foundation, CC BY 3.0; English dialogue).
-- **Held-out Taiwanese Mandarin narrative drama**: *Grandma's Words* (《阿嬤的話》，國立聯合大學創新育成中心 National United University / dir. Huang Tzu-Yen, CC BY 3.0; sparse Taiwanese Mandarin dialogue followed by 86 s of silent visual storytelling—default blind-listener study clip).
+- **Held-out Taiwanese Mandarin narrative drama**: *Grandma's Words* (《阿嬤的話》，國立聯合大學創新育成中心 National United University / dir. Huang Tzu-Yen, CC BY 3.0; sparse Taiwanese Mandarin dialogue followed by 86 s of silent visual storytelling—default blind-listener study clip, benchmarked head-to-head on **Qwen3-VL-8B** vs. **Qwen3.5-9B**).
 - **Held-out Taiwanese Mandarin documentary**: *Young Coffee Story* (《【Young Coffee Story】人物紀實短片》，台灣失智症協會 Taiwan Alzheimer's Disease Association / 觀賞故事, CC BY 3.0; interview-heavy documentary with burned-in bilingual open captions and slow cross-dissolves).
 
-| 0:00–2:20 | 27B, EN (*ToS* ref) | **8B, EN (*ToS*)** | **8B, Mandarin (*ToS*)** | **8B, Mandarin (*Grandma's Words*, held-out)** | **8B, Mandarin (*Young Coffee*, held-out)** |
-|---|---:|---:|---:|---:|---:|
-| Lines that fit their silence | 17/17 | 19/19 | 15/15 | **17/18** (1 held, not mixed) | **13/13** |
-| Narration over detected speech | 0.0 s | 0.0 s | 0.0 s | **0.0 s** | **0.0 s** |
-| Narration over official subtitle cues | 0.4 s | 0.6 s | 0.4 s | n/a | n/a (open-captioned source) |
-| Verifier: obvious planted errors flagged | 17/17 | 18/19 | 13/15 | **13/15** | **12/13** |
-| Verifier: subtle in-film errors flagged | 15/17 | 13/19 (verb swaps 0/5) | 11/15 (char/neighbour) | **12/15** (neighbour swaps) | **12/13** (neighbour swaps) |
-| Verifier flags on unmodified placed lines | 1/17 | 2/19 | 1/15 | **0/17** | **3/13** (all 3 true dissolve-timing leads) |
-| AI-assisted frame check: accurate · minor · wrong | 13 · 4 · 0 | — | 7 · 7 · 1 | **11 · 5 · 1** | **6 · 5 · 2** |
-| Processing per content minute | 125 s | 50 s | 39 s | **38 s** | **39 s** |
-| Peak model memory | 33.2 GB | 13.7 GB | 13.8 GB | **14.0 GB** | **13.6 GB** |
+| 0:00–2:20 | 27B, EN (*ToS* ref) | **8B, EN (*ToS*)** | **8B, Mandarin (*ToS*)** | **8B, Mandarin (*Grandma's Words*)** | **9B, Mandarin (*Grandma's Words*, `zh-TW` voice)** | **8B, Mandarin (*Young Coffee*)** |
+|---|---:|---:|---:|---:|---:|---:|
+| Lines that fit their silence | 17/17 | 19/19 | 15/15 | 17/18 (1 held) | **16/16** | **13/13** |
+| Narration over detected speech | 0.0 s | 0.0 s | 0.0 s | 0.0 s | **0.0 s** | **0.0 s** |
+| Narration over official subtitle cues | 0.4 s | 0.6 s | 0.4 s | n/a | n/a | n/a (open-captioned source) |
+| Verifier: obvious planted errors flagged | 17/17 | 18/19 | 13/15 | 13/15 | **15/15** | **12/13** |
+| Verifier: subtle in-film errors flagged | 15/17 | 13/19 (verb swaps 0/5) | 11/15 (char/neighbour) | 12/15 (neighbour) | **15/15** (neighbour) | **12/13** (neighbour) |
+| Verifier flags on unmodified placed lines | 1/17 | 2/19 | 1/15 | 0/17 | **5/16** (strict shot-timing / paraphrase checks) | **3/13** (dissolve-timing leads) |
+| AI-assisted frame check: accurate · minor · wrong | 13 · 4 · 0 | — | 7 · 7 · 1 | 11 · 5 · 1 | **12 · 4 · 0** | **6 · 5 · 2** |
+| Processing per content minute | 125 s | 50 s | 39 s | 38 s | **43.5 s** | **39 s** |
+| Peak model memory | 33.2 GB | 13.7 GB | 13.8 GB | 14.0 GB | **13.1 GB** | **13.6 GB** |
 
-What the numbers say: across an English sci-fi film, a held-out Taiwanese narrative drama, and a held-out Taiwanese documentary, the 8B profile preserves every timing guarantee (`0.0 s` narration over detected speech; the one overflowing candidate line `AD018` on *Grandma's Words* is automatically held back from the audio mix) at ~13.6–14.0 GB peak memory. On *Grandma's Words* (where 86 seconds of silent visual discovery follow a brief spoken memory), 16 of 17 placed lines are accurate or minor, while one world-prior mistake (`AD012`, assuming cookies inside a butter-cookie tin before the next shot reveals medication packs and a red temple amulet) illustrates why human describer review remains mandatory. On *Young Coffee Story*, all three verifier flags on unmodified lines (`AD002`, `AD006`, `AD013`) were genuine cross-dissolve timing catches. Per-line notes are in [`eval/spotcheck_grandma_words_0-140_zh.csv`](eval/spotcheck_grandma_words_0-140_zh.csv), [`eval/spotcheck_young_coffee_0-140_zh.csv`](eval/spotcheck_young_coffee_0-140_zh.csv), and [`eval/spotcheck_tears_of_steel_0-140_zh.csv`](eval/spotcheck_tears_of_steel_0-140_zh.csv). Human describer review and blind and low-vision listener ratings are underway ([listening pilot](https://ad-listen.pages.dev/)).
+What the numbers say: across an English sci-fi film, a held-out Taiwanese narrative drama, and a held-out Taiwanese documentary, both ≤10B profiles (**Qwen3-VL-8B** and **Qwen3.5-9B**) preserve every timing guarantee (`0.0 s` narration over detected speech) under 14 GB peak memory. Head-to-head on *Grandma's Words* (where 86 seconds of silent visual discovery follow a brief spoken memory), upgrading from late-fusion `Qwen3-VL-8B` to early-fusion `Qwen3.5-9B` cuts peak MLX memory from `14.0 GB` to **`13.1 GB`**, fits **`16/16`** lines (`0` overflows), raises planted-error catch rates from `13/15` easy & `12/15` hard to **`15/15` easy & `15/15` hard**, and eliminates **all factual hallucinations (`12 · 4 · 0` vs. `11 · 5 · 1`)**—specifically avoiding 8B's US-centric world-knowledge priors (mistranslating a Taiwanese grandma's *White Castle* butter-cookie tin as burger sliders `牛肉餅` in `AD010` and assuming cookies inside the tin in `AD012` instead of the actual medication blister pack `深色藥排` and embossed Baishatun Mazu temple amulet `白沙屯拱天宮`). Per-line notes are in [`eval/spotcheck_grandma_words_0-140_zh_9b.csv`](eval/spotcheck_grandma_words_0-140_zh_9b.csv), [`eval/spotcheck_grandma_words_0-140_zh.csv`](eval/spotcheck_grandma_words_0-140_zh.csv), [`eval/spotcheck_young_coffee_0-140_zh.csv`](eval/spotcheck_young_coffee_0-140_zh.csv), and [`eval/spotcheck_tears_of_steel_0-140_zh.csv`](eval/spotcheck_tears_of_steel_0-140_zh.csv). Human describer review and blind and low-vision listener ratings are underway ([listening pilot](https://ad-listen.pages.dev/)).
 
-Provenance: the 8B English sample ([`samples/tears-of-steel-0-140-8b`](samples/tears-of-steel-0-140-8b)) was produced with `GAPCASTER_VLM` pointing at Qwen3-VL-8B. All three Mandarin samples ([`samples/grandma-words-0-140-zh`](samples/grandma-words-0-140-zh), [`samples/young-coffee-0-140-zh`](samples/young-coffee-0-140-zh), and [`samples/tears-of-steel-0-140-zh`](samples/tears-of-steel-0-140-zh)) were produced locally by this repository with `--lang zh`.
+Provenance: [`samples/grandma-words-0-140-zh`](samples/grandma-words-0-140-zh) was produced with `Qwen3.5-9B-8bit` and macOS on-device Taiwanese Mandarin (`zh-TW`) neural speech synthesis; [`samples/tears-of-steel-0-140-8b`](samples/tears-of-steel-0-140-8b), [`samples/young-coffee-0-140-zh`](samples/young-coffee-0-140-zh), and [`samples/tears-of-steel-0-140-zh`](samples/tears-of-steel-0-140-zh) were produced locally with `Qwen3-VL-8B-Instruct-8bit`.
 
 ### Mandarin narration & Taiwanese documentary adaptations (`--lang zh`)
 
-- Budget in characters, not words: ⌊window × 4.0 字/s⌋, from 4 to 40 characters. The default voice, Kokoro `zf_xiaobei`, speaks about 4.3 characters per second.
-- Narration is written and stored in Traditional Chinese with Taiwan phrasing (OpenCC `s2twp`). It is converted to Simplified only on the way into the TTS front end, whose Mandarin G2P expects Simplified characters.
-- Shot facts stay in English, where the vision model is most reliable. The writer reads them and writes in Mandarin; untranslated lowercase English common nouns leaked from the facts (e.g. *succulent*) are blocked by the deterministic Mandarin style gate and rewritten into Chinese (`多肉植物`), while on-screen proper names (`Young`) are exempt.
+- Budget in characters, not words: ⌊window × 4.0 字/s⌋, from 4 to 40 characters (~4.3–4.4 characters/s spoken cadence).
+- **Authentic Taiwanese Mandarin (`zh-TW`) speech synthesis + portable Apache-2.0 fallback:** on macOS (`--tts auto` / `--tts avspeech`), Mandarin narration is voiced directly from Traditional Chinese using the local offline `zh-TW` neural `AVSpeechSynthesizer` voice (e.g. Siri `Shufen` / `Meijia`, zero extra MLX memory, with WSOLA pitch-preserving `1.08×` / `1.15×` rate scaling in the Gap-Fit Loop). On Linux, Windows, or Intel Arc XPU (`--tts mlx` / `--tts kokoro`), it uses Apache-2.0 `Kokoro-82M` (`zf_xiaobei`) with an OpenCC `t2s` + polyphone `著 → 着` G2P fix so aspectual `著` (`zhe`) is never misread as `zhù`.
+- Narration is written and stored in Traditional Chinese with Taiwan phrasing (OpenCC `s2twp` plus `TW_TERMS` lexicon normalisation).
+- Shot facts stay in English, where the vision model is most reliable. Cross-shot OCR deduplication (`text_already_read()`) prevents repeating container labels across consecutive angles, while `WRITE_ZH` distinguishes overlaid film title cards (`字幕：…`) from prop/container inscriptions woven naturally into action. Untranslated lowercase English common nouns (e.g. *succulent*) are blocked by the deterministic Mandarin style gate and rewritten into Chinese (`多肉植物`).
 - **Open-caption & BGM watermark guards for Taiwanese media:** almost all Taiwanese online/TV video burns open dialogue subtitles into the frame (`is_spoken_subtitle()` suppresses on-screen text that merely repeats surrounding ASR speech so dialogue is not read twice), and `filter_segment_words()` strips known Whisper Chinese BGM watermarks (`字幕志願者 李宗盛`, etc.) and single-word silence phantoms.
 - **Soft-dissolve subdivision:** documentary montages built with slow cross-dissolves rather than hard cuts are subdivided into ≤8 s windows in `scenes.shots()` so title cards and archival photos are not collapsed into a single shot.
-- The style gate has Mandarin rules: 我們看到／鏡頭 (camera language), 似乎／好像／可能 (speculation), 我／我們 (first person) and leaked English common nouns are hard blocks; emotion words, evaluative words and similes are flagged. Text read verbatim (「…」 or 字幕：…) is exempt.
+- The style gate has Mandarin rules: 我們看到／鏡頭 (camera language), 似乎／好像／可能 (speculation), 我／我們 (first person), redundant dialogue tags (`笑著說`) and leaked English common nouns are hard blocks; emotion words, evaluative words and similes are flagged. Text read verbatim (「…」 or 字幕：…) is exempt.
 - A caption line written when no unread text is on screen is treated as a hallucinated reading: the writer is asked once for the visible action instead, otherwise the line is dropped.
 - Cast sheets carry Chinese names and `named_from` timestamps ([`configs/cast_tears_of_steel_zh.yaml`](configs/cast_tears_of_steel_zh.yaml), [`configs/cast_young_coffee_zh.yaml`](configs/cast_young_coffee_zh.yaml)).
-- Known gaps: foreign title cards (`YOUNG COFFEE STORY`, `SIMULATION READY...`) are sometimes read in English rather than translated; Kokoro's Mandarin voice is a mainland-accent stock voice, and a Taiwanese voice is needed; short B-roll photo inserts inside a single sub-shot (`AD012`) can still be missed; noun/verb planted-error sets need a Chinese POS tagger.
+- Known gaps: macOS's built-in `zh-TW` voice is an OS runtime rather than open weights, while portable Apache-2.0 `Kokoro-82M` carries a mainland accent (integrating an Apache-2.0 Taiwanese Mandarin model such as MediaTek Research `BreezyVoice` for Linux/XPU is planned for Year 1); vertical/right-to-left temple inscriptions can transpose character reading order (`白沙屯拱天宮` → `白拱沙天屯宮`); noun/verb planted-error sets need a Chinese POS tagger.
 
 ```bash
 gapcaster run young_coffee.mp4 --out runs/yc-zh --cast configs/cast_young_coffee_zh.yaml \
@@ -58,7 +59,7 @@ gapcaster run young_coffee.mp4 --out runs/yc-zh --cast configs/cast_young_coffee
 
 
 
-**Start here:** [Project page](https://tedinroc.github.io/gapcaster-small/) · [Native Taiwanese Mandarin sample (*Young Coffee Story*)](samples/young-coffee-0-140-zh/) · [Mandarin *Tears of Steel* sample](samples/tears-of-steel-0-140-zh/) · [8B English sample](samples/tears-of-steel-0-140-8b/clip_with_ad.mp4) · [Listening pilot for blind and low-vision listeners](https://ad-listen.pages.dev/) · [Run locally](#quick-start)
+**Start here:** [Project page](https://tedinroc.github.io/gapcaster-small/) · [Taiwanese narrative drama sample (*Grandma's Words*, 9B + `zh-TW` voice)](samples/grandma-words-0-140-zh/) · [Taiwanese documentary sample (*Young Coffee Story*)](samples/young-coffee-0-140-zh/) · [Mandarin *Tears of Steel* sample](samples/tears-of-steel-0-140-zh/) · [8B English sample](samples/tears-of-steel-0-140-8b/clip_with_ad.mp4) · [Listening pilot for blind and low-vision listeners](https://ad-listen.pages.dev/) · [Run locally](#quick-start)
 
 Built by Ted Chen with AI coding assistance (Claude, Anthropic).
 
@@ -192,6 +193,7 @@ tests/          unit and HTTP studio tests (pytest)
 - Code: MIT, © 2026 Ted Chen. Developed with AI coding assistance (Claude, Anthropic; Gemini, Google).
 - Demo footage and frames:
   - *Tears of Steel* © Blender Foundation | mango.blender.org, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). `samples/tears-of-steel-0-140*/clip_with_ad.mp4` are excerpts (0:00–2:20) with GapCaster's synthetic description track mixed in; they are modified works and are not endorsed by the Blender Foundation. Score by Joram Letwory (www.tearsofsteel.org), heard as part of the CC BY 3.0 film; the separately released soundtrack files are CC BY-ND 3.0 and are not used. Official subtitles are used only for evaluation.
+  - *Grandma's Words* (《阿嬤的話》, [YouTube `mdWZD63WliY`](https://www.youtube.com/watch?v=mdWZD63WliY)) © 國立聯合大學創新育成中心 (National United University Innovation Incubation Center) / dir. 黃子彥 (Huang Tzu-Yen), licensed under Creative Commons Attribution ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)). `samples/grandma-words-0-140-zh/clip_with_ad.mp4` is a 0:00–2:20 excerpt modified to mix in GapCaster Small's synthetic Taiwanese Mandarin audio-description draft and is not endorsed by the creators.
   - *Young Coffee Story* (《【Young Coffee Story】人物紀實短片_台灣失智症協會｜觀賞故事》, [YouTube `K3YuJ_aXPDQ`](https://www.youtube.com/watch?v=K3YuJ_aXPDQ)) © 台灣失智症協會 (Taiwan Alzheimer's Disease Association) / 觀賞故事, licensed under Creative Commons Attribution ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)). `samples/young-coffee-0-140-zh/clip_with_ad.mp4` is a 0:00–2:20 excerpt modified to mix in GapCaster Small's synthetic Mandarin audio-description draft and is not endorsed by the Taiwan Alzheimer's Disease Association.
-- Models: Qwen3-VL-8B-Instruct (Apache-2.0; default), Whisper large-v3-turbo (MIT), Silero VAD (MIT), Kokoro-82M (Apache-2.0), optional reference Qwen3.8-27B (Apache-2.0). Voices are synthetic stock voices; no voice cloning.
+- Models: Qwen3.5-9B (Apache-2.0; default), Qwen3-VL-8B-Instruct (Apache-2.0), Whisper large-v3-turbo (MIT), Silero VAD (MIT), Kokoro-82M (Apache-2.0; cross-platform TTS), macOS on-device `AVSpeechSynthesizer` `zh-TW` neural voice (local OS runtime for Taiwanese Mandarin on macOS), optional reference Qwen3.8-27B (Apache-2.0). Voices are synthetic system/stock voices; no voice cloning.
 - Libraries include MLX, mlx-vlm, mlx-audio, OpenVINO GenAI, PyTorch (BSD-3-Clause), PySceneDetect and spaCy. Kokoro's English G2P falls back to espeak-ng (GPL-3.0) for out-of-vocabulary words; the library comes in the espeakng-loader wheel that misaki[en] installs, is loaded at runtime, and is not redistributed by this repo. ffmpeg is called as a subprocess.

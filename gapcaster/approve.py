@@ -46,7 +46,7 @@ def apply(run_dir, approved_path, settings: Settings | None = None, tts_backend:
             tts = tts or TTS(s.tts_model, s.tts_voice, s.lang, backend=s.tts_backend)
             text, fit, dur = new_text or r["text"], None, 0.0
             for sp in s.speeds:
-                a, dur = tts.synth(for_tts(text, s.lang), sp)
+                a, dur = tts.synth(for_tts(text, s.lang, simplified=tts.needs_simplified), sp)
                 if dur <= r["avail"]:
                     fit = (a, dur, sp)
                     break

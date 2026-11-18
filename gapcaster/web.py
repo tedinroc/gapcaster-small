@@ -69,13 +69,13 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-si
   <main id="main" tabindex="-1">
     <section class="card" aria-labelledby="h-runs">
       <h2 id="h-runs">1. 審核與匯出 · Inspect &amp; Review Runs</h2>
-      <p class="sub">無需下載模型即可直接開啟內建的繁體中文與英文 8B 示範，逐句審核畫面證據並一鍵匯出核准後的字幕與音軌。 Open any run below to audit evidence per line, edit text, and export only approved lines.</p>
+      <p class="sub">無需下載模型即可直接開啟內建的繁體中文（9B／8B）與英文（8B）示範，逐句審核畫面證據並一鍵匯出核准後的字幕與音軌。 Open any run below to audit evidence per line, edit text, and export only approved lines.</p>
       <div id="runs-list" class="runs" role="region" aria-live="polite">載入中… / Loading…</div>
     </section>
 
     <section class="card" aria-labelledby="h-new">
       <h2 id="h-new">2. 在本機草擬新影片 · Draft a New Video Locally</h2>
-      <p class="sub">影片、逐字稿與草稿全程留在這台電腦上。需要本機已安裝 ffmpeg 與對應模型（預設 Qwen3-VL-8B + Whisper + Kokoro-82M）。 Video and drafts never leave this machine.</p>
+      <p class="sub">影片、逐字稿與草稿全程留在這台電腦上。需要本機已安裝 ffmpeg 與對應模型（預設 Qwen3.5-9B + Whisper + 台灣腔國語／Kokoro-82M）。 Video and drafts never leave this machine.</p>
       <form id="run-form">
         <div class="grid">
           <div>
@@ -470,7 +470,9 @@ def make_handler(state: StudioState):
                         with state.lock:
                             job["logs"].append(str(msg))
                     try:
-                        s = Settings(lang=lang, tts_voice="zf_xiaobei" if lang == "zh" else Settings.tts_voice)
+                        from .tts import resolve_tts
+                        tts_backend, tts_voice = resolve_tts(lang)
+                        s = Settings(lang=lang, tts_backend=tts_backend, tts_voice=tts_voice)
                         if state.runner:
                             state.runner(vid_path, out_dir, start_s, end_s, cast_path, s, _log)
                         else:

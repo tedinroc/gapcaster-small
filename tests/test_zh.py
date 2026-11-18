@@ -24,6 +24,9 @@ def test_traditional_and_tts_conversion():
     assert L.to_traditional("一位老人跪在地上按住胸口喘气") == "一位老人跪在地上按住胸口喘氣"
     assert L.to_traditional("標籤寫著白城堡黃油餅乾") == "標籤寫著白城堡奶油餅乾"
     assert L.for_tts("字幕：四十年後。", "zh") == "字幕，四十年后。"
+    assert L.for_tts("鐵盒上寫著「白城堡奶油餅乾」。", "zh") == "铁盒上写着，白城堡奶油饼干。"
+    assert L.for_tts("著名作家拿著原著。", "zh") == "著名作家拿着原著。"
+    assert L.for_tts("鐵盒上寫著「白城堡奶油餅乾」。", "zh", simplified=False) == "鐵盒上寫著，白城堡奶油餅乾。"
     assert L.for_tts("Forty years later.", "en") == "Forty years later."
 
 
@@ -113,3 +116,14 @@ def test_bgm_watermark_and_open_caption_filters():
     spans = [{"start": 21.0, "end": 26.0, "text": "善良孝顺负责任很热心"}]
     assert is_spoken_subtitle("負責任 Responsible", spans, 23.0, 25.0, "zh")
     assert not is_spoken_subtitle("關於林善仁 About Mr. Shan-Ren Lin", spans, 23.0, 25.0, "zh")
+
+
+def test_shot_text_prose_stripping_and_dedup():
+    from gapcaster.pipeline import normalize_shot_text, text_already_read
+    s1 = normalize_shot_text('"WHITE CASTLE" on a blue tin, "Multi Protein Granules" on a yellow box')
+    assert s1 == "WHITE CASTLE | Multi Protein Granules"
+    seen_str = {s1.lower()}
+    seen_tok = {"white", "castle", "multi", "protein", "granules"}
+    assert text_already_read("WHITE CASTLE", seen_str, seen_tok)
+    assert text_already_read("CASTLE", seen_str, seen_tok)
+    assert not text_already_read("白沙屯拱天宮 天上聖母", seen_str, seen_tok)

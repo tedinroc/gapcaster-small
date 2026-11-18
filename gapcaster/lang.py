@@ -52,6 +52,7 @@ def has_content(text: str, lang: str = "en") -> bool:
 TW_TERMS = (
     ("黃油", "奶油"),
     ("衛衣", "運動衫"),
+    ("藥板", "藥排"),
     ("視頻", "影片"),
     ("屏幕", "螢幕"),
     ("鼠標", "滑鼠"),
@@ -67,11 +68,31 @@ def to_traditional(text: str) -> str:
     return out
 
 
-def for_tts(text: str, lang: str = "en") -> str:
-    """Text as the TTS front end should see it."""
+_ZHU_WORDS = re.compile(
+    r"(著名|著作|顯著|显著|執著|执著|名著|原著|專著|专著|土著|昭著|卓著|編著|编著|合著|譯著|译著|新著|巨著|論著|论著|著稱|著称|著述|著錄|著录)"
+)
+
+
+def for_tts(text: str, lang: str = "en", simplified: bool = True) -> str:
+    """Text as the TTS front end should see it.
+    Simplified G2P front ends (Kokoro) get t2s + aspectual 著->着; native zh-TW front ends keep Traditional."""
     if lang == "zh":
-        text = _converter("t2s").convert(text)
+        if simplified:
+            text = _converter("t2s").convert(text)
+            if "著" in text:
+                kept = {}
+
+                def _hold(m):
+                    k = f"\ue000{len(kept)}\ue001"
+                    kept[k] = m.group(0)
+                    return k
+
+                text = _ZHU_WORDS.sub(_hold, text).replace("著", "着")
+                for k, v in kept.items():
+                    text = text.replace(k, v)
         # read the full-width quote marks as a short pause rather than skipping them
         text = text.replace("「", "，").replace("」", "，").replace("：", "，")
-        return re.sub(r"，{2,}", "，", text).strip("，")
+        text = re.sub(r"，{2,}", "，", text)
+        text = re.sub(r"，([。！？；])", r"\1", text)
+        return text.strip("，")
     return text

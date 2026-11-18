@@ -21,10 +21,10 @@ class Settings:
     # Models
     whisper_model: str = "mlx-community/whisper-large-v3-turbo"
     # Hugging Face repo id or a local folder (set GAPCASTER_VLM to use a copy already on disk).
-    # Human-Scale default: an 8B vision-language model (about 14 GB peak on the test clip).
-    # The 27B model used in the original GapCaster runs is kept as an optional quality reference:
-    #   GAPCASTER_VLM=lmstudio-community/Qwen3.8-27B-MLX-8bit
-    vlm_model: str = os.environ.get("GAPCASTER_VLM", "mlx-community/Qwen3-VL-8B-Instruct-8bit")
+    # Human-Scale default: Qwen3.5-9B-8bit (≤10B early-fusion VLM, ~13.1 GB peak on Apple Silicon).
+    # Qwen3-VL-8B-Instruct-8bit (8B) and Qwen3.8-27B-MLX-8bit (27B reference) are also supported:
+    #   GAPCASTER_VLM=mlx-community/Qwen3-VL-8B-Instruct-8bit
+    vlm_model: str = os.environ.get("GAPCASTER_VLM", "mlx-community/Qwen3.5-9B-8bit")
     tts_model: str = "mlx-community/Kokoro-82M-bf16"
     tts_voice: str = "af_heart"
     llm_backend: str = "mlx"        # "mlx" (in-process, Mac) or "openai" (any OpenAI-compatible server, e.g. vLLM on Arc Pro B70)
@@ -34,5 +34,5 @@ class Settings:
     asr_backend: str = "mlx"                 # "mlx" (mlx-whisper) or "openvino" (OpenVINO GenAI WhisperPipeline)
     asr_ov_model: str = os.environ.get("GAPCASTER_OV_WHISPER", "OpenVINO/whisper-large-v3-turbo-int8-ov")
     asr_device: str = "CPU"                  # OpenVINO device: CPU or GPU (Arc)
-    tts_backend: str = "mlx"                 # "mlx" (mlx-audio) or "kokoro" (PyTorch, CPU or Intel XPU)
+    tts_backend: str = "mlx"                 # "avspeech" (macOS zh-TW neural), "mlx" (mlx-audio Kokoro), or "kokoro" (PyTorch CPU / XPU)
     extra: dict = field(default_factory=dict)

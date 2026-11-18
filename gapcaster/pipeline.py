@@ -38,6 +38,8 @@ def clean(reply: str, lang: str = "en") -> str:
         return ""
     if lang == "zh":
         t = L.to_traditional(t.splitlines()[0].strip())
+        if t and t[-1] not in "。！？…」”":
+            t += "。"
     return t
 
 
@@ -96,6 +98,33 @@ def dialogue_near(spans, t0, t1, before=True):
 
 
 PROSE_TEXT_DESC = re.compile(r"^(a|an|the)\s+[a-z]+(?:\s+[a-z]+)?\s+(with|of|on|in|showing|containing|filled)\b", re.I)
+QUOTED_SPAN = re.compile(r'"([^"\n]{2,80})"|「([^」\n]{1,80})」')
+TEXT_TOKENS = re.compile(r"[A-Za-z0-9]{2,}|[\u3400-\u4dbf\u4e00-\u9fff]")
+
+
+def normalize_shot_text(raw: str) -> str:
+    """Strip VLM prose explanations around quoted OCR strings (e.g. '\"WHITE CASTLE\" on a blue tin')."""
+    s = (raw or "").strip()
+    if not s:
+        return ""
+    qs = [a or b for a, b in QUOTED_SPAN.findall(s) if (a or b).strip()]
+    if qs and re.search(r"\b(on|in|inside|at|of|from)\s+(a|an|the)\b", s, re.I):
+        return " | ".join(qs)
+    if len(s) >= 2 and s[0] == '"' and s[-1] == '"' and '"' not in s[1:-1]:
+        return s[1:-1].strip()
+    return s
+
+
+def text_already_read(candidate: str, seen_strings: set[str], seen_tokens: set[str]) -> bool:
+    low = candidate.lower()
+    if low in seen_strings:
+        return True
+    toks = {t.lower() for t in TEXT_TOKENS.findall(candidate)}
+    if toks and toks <= seen_tokens:
+        return True
+    if len(toks) >= 2 and len(toks & seen_tokens) / len(toks) >= 0.8:
+        return True
+    return False
 
 
 def is_spoken_subtitle(text: str, spans, t0: float, t1: float, lang: str = "en") -> bool:
@@ -189,7 +218,7 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
 
     slots = build_slots(gaps, shot_list, s)
     lines, recent, prev_end = [], [], -1.0
-    read_text, skipped_repeats = set(), 0
+    read_text, read_tokens, skipped_repeats = set(), set(), 0
     with T("write_fit_verify"):
         for slot in slots:
             begin = max(slot["start"], prev_end + s.breath)
@@ -201,12 +230,15 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
             unread = []
             for i in slot.get("prev", []) + slot["shots"]:
                 sh_i = by_id[i]
-                t = str((sh_i.get("facts") or {}).get("text", "") or "").strip()
-                if (len(t) >= 3 and t.lower() not in read_text and not CREDITS.search(t)
-                        and not PROSE_TEXT_DESC.search(t)
+                t = normalize_shot_text(str((sh_i.get("facts") or {}).get("text", "") or ""))
+                if (len(t) >= 2 and L.has_content(t, "zh") and not text_already_read(t, read_text, read_tokens)
+                        and not CREDITS.search(t) and not PROSE_TEXT_DESC.search(t)
                         and not is_spoken_subtitle(t, spans, sh_i["start"], sh_i["end"], s.lang)):
+                    if not L.CJK.search(t) and not re.search(r"[A-Za-z]{4,}", t):
+                        continue
                     unread.append(t[:90])
                     read_text.add(t.lower())
+                    read_tokens.update(tok.lower() for tok in TEXT_TOKENS.findall(t))
             text_note = ((("畫面上尚未唸出的文字（唸出與劇情相關的部分，外文請翻成中文）：" if s.lang == "zh" else
                            "On-screen text not read yet (read the story-relevant part, e.g. a headline): ")
                           + " | ".join(f'"{u}"' for u in unread)) if unread else "")
@@ -235,8 +267,17 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
             attempts, status, audio, dur, speed = [], "overflow", None, 0.0, 1.0
             # text gate: story text on screen must be read (deterministic check, model rewrite)
             story = unread
-            if story and not (any(styleguard.content_words(u, s.lang) & styleguard.content_words(text, s.lang) for u in story)
-                              or (s.lang == "zh" and re.search(r"^(字幕|標題|招牌|告示|文字|字卡|頭條|畫面文字)[:：]|「", text))):
+            def _text_mentioned(u: str, line: str) -> bool:
+                if styleguard.content_words(u, s.lang) & styleguard.content_words(line, s.lang):
+                    return True
+                if s.lang == "zh":
+                    if re.search(r"^(字幕|標題|招牌|告示|文字|字卡|頭條|畫面文字)[:：]|「", line):
+                        return True
+                    # Foreign-language OCR is translated into Chinese by WRITE_ZH; single-word prop brands may also be omitted
+                    if not L.CJK.search(u) and (len(u.split()) < 2 or re.search(r"(印|寫|標|字|牌|盒|罐|瓶|袋|符|書|報|卡)", line)):
+                        return True
+                return False
+            if story and not any(_text_mentioned(u, text) for u in story):
                 attempts.append({"text": text, "seconds": None, "fit": False, "reason": "text gate: on-screen text not read"})
                 text = clean(lang=s.lang, reply=model.chat(prompts.get("READ_TEXT", s.lang).format(text=" | ".join(story), budget=budget, line=text),
                                         max_tokens=80)) or text
@@ -254,7 +295,7 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
                     continue
                 fit = False
                 for sp in s.speeds:
-                    a, d = tts.synth(L.for_tts(text, s.lang), sp)
+                    a, d = tts.synth(L.for_tts(text, s.lang, simplified=tts.needs_simplified), sp)
                     if sp == s.speeds[0]:
                         d1 = d
                     if d <= avail:
@@ -348,7 +389,8 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
         "shots_covered": len({i for r in placed for i in r["shots"]}),
         "processing_seconds": round(elapsed, 1),
         "seconds_per_content_minute": round(elapsed / (total / 60), 1),
-        "stages": T.stages, "llm": model.stats.as_dict(), "tts": {"calls": tts.calls, "audio_seconds": round(tts.audio_seconds, 1)},
+        "stages": T.stages, "llm": model.stats.as_dict(),
+        "tts": {"calls": tts.calls, "audio_seconds": round(tts.audio_seconds, 1), "voice": tts.voice_id, "backend": tts.backend},
     }
     try:
         import mlx.core as mx

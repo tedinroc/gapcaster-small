@@ -47,7 +47,8 @@ class MLXBackend:
         self.stats.seconds += time.time() - t
         self.stats.prompt_tokens += int(getattr(out, "prompt_tokens", 0) or 0)
         self.stats.gen_tokens += int(getattr(out, "generation_tokens", 0) or 0)
-        return (out.text if hasattr(out, "text") else str(out)).strip()
+        text = out.text if hasattr(out, "text") else str(out)
+        return text.rsplit("</think>", 1)[-1].strip() if "</think>" in text else text.strip()
 
 
 class OpenAIBackend:

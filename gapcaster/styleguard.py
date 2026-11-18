@@ -23,6 +23,7 @@ HARD_ZH = {
     "camera-language": r"(我們看到|我們聽到|鏡頭|画面中我们|畫面中我們|畫面顯示|镜头)",
     "speculation": r"(似乎|好像|彷彿|仿佛|可能|或許|或许|大概|也許|也许|看起來像|看起来像|應該是|应该是)",
     "first-person": r"(我們|我们|我)",
+    "english-word": r"(?<![A-Za-z])[a-z]{3,}(?![A-Za-z])",
 }
 SOFT_ZH = {
     "inner-state": r"(傷心|难过|難過|開心|开心|高興|生氣|生气|憤怒|害怕|恐懼|緊張|紧张|擔心|担心|興奮|兴奋|困惑|沮喪|絕望|疲憊|疲惫|無聊|放心|決心)",
@@ -63,6 +64,7 @@ def check(line: str, max_words: int | None = None, exempt=(), lang: str = "en"):
 def _check_zh(line: str, max_units: int | None, exempt=()):
     from .lang import units
     hard, soft = [], []
+    onscreen_en = {w for t in (exempt or ()) for w in re.findall(r"[a-z]{3,}", t.lower())}
     # text read verbatim (inside 「」 or after 字幕／標題：) is exempt from the rules
     line = re.sub(r"「[^」]*」|“[^”]*”|\"[^\"]*\"", "", line)
     line = re.sub(r"(字幕|標題|标题|招牌|告示|文字|字卡|頭條|头条)[:：][^。！？]*", "", line)
@@ -70,7 +72,11 @@ def _check_zh(line: str, max_units: int | None, exempt=()):
         if t and t in line:
             line = line.replace(t, "")
     for k, pat in HARD_ZH.items():
-        if re.search(pat, line):
+        if k == "english-word":
+            leaked = [w for w in re.findall(pat, line) if w.lower() not in onscreen_en]
+            if leaked:
+                hard.append(k)
+        elif re.search(pat, line):
             hard.append(k)
     for k, pat in SOFT_ZH.items():
         if re.search(pat, line):

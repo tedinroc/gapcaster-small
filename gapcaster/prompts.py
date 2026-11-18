@@ -8,7 +8,7 @@ Reply with JSON only:
 {{"who": "names, or brief visual descriptions of the people visible, or none",
   "where": "the setting",
   "action": "what is happening, present tense",
-  "text": "legible on-screen text, or empty",
+  "text": "legible story text on screen (title cards, signs, headlines, name labels), excluding bottom subtitles that merely repeat the spoken dialogue, or empty",
   "key": "the single most important visual fact for a blind viewer",
   "confidence": 0.0 to 1.0}}"""
 
@@ -53,7 +53,7 @@ Line: {line}"""
 # and the facts are an internal record. The narration itself is written in Traditional Chinese.
 
 WRITE_ZH = """你替視障觀眾撰寫一句電影「口述影像」旁白，使用繁體中文（台灣用語）。
-規則：現在式、客觀描述畫面上看得到的事物。如果畫面有尚未唸出的劇情文字（例如「四十年後」字卡、招牌、報紙標題），先唸出來，例如「字幕：四十年後。」；外文字卡一律翻成中文唸，不要直接唸英文。不要唸片頭贊助、基金會支持、製作名單或商標。情緒只能透過看得到的表情或動作表達。不要用鏡頭語言（「我們看到」「鏡頭」「畫面中」）。不要猜測（「似乎」「好像」「可能」）。不要重複對白已經說過的內容。人物符合角色表時用角色名稱或稱呼（例如「狙擊手」）。用字簡單具體，句子短。
+規則：現在式、客觀描述畫面上看得到的事物。如果畫面有尚未唸出的劇情文字（例如「四十年後」字卡、招牌、報紙標題），先唸出來，例如「字幕：四十年後。」；外文字卡一律翻成中文唸，不要直接唸英文。除了畫面上的專有名詞或店名（如 Young）外，所有一般名詞一律翻成中文，絕對不可夾雜英文單字（例如不可寫 succulent，應寫多肉植物）。不要唸片頭贊助、基金會支持、製作名單或商標。情緒只能透過看得到的表情或動作表達。不要用鏡頭語言（「我們看到」「鏡頭」「畫面中」）。不要猜測（「似乎」「好像」「可能」）。不要重複對白已經說過的內容。人物符合角色表時用角色名稱或稱呼（例如「狙擊手」）。用字簡單具體，句子短。
 角色表：{cast}
 最近幾句旁白（不要重複）：{recent}
 前一句對白：「{before}」
@@ -65,12 +65,13 @@ WRITE_ZH = """你替視障觀眾撰寫一句電影「口述影像」旁白，使
 如果畫面沒有新東西，只回覆 SKIP。否則只回覆這一句旁白。"""
 
 SHORTEN_ZH = """把這句口述影像旁白縮短。唸出來要 {dur:.1f} 秒，但空檔只有 {avail:.1f} 秒。
-改寫成最多 {target} 個中文字，使用繁體中文。保留最重要的畫面資訊（誰、在做什麼優先）。
+改寫成最多 {target} 個中文字，使用純繁體中文（不可夾雜英文普通名詞）。保留最重要的畫面資訊（誰、在做什麼優先）。
 現在式、不詮釋、不用鏡頭語言。只回覆改寫後的句子。
 原句：{line}"""
 
 RESTYLE_ZH = """改寫這句口述影像旁白，修正這些問題：{problems}。
 只描述看得到的事物、現在式、不要猜測詞（似乎、好像、可能、或許）、不要鏡頭語言（我們看到、鏡頭）、不要用「我」「我們」。
+如果問題是 english-word：把句子裡夾雜的英文普通名詞翻譯成繁體中文（例如多肉植物、木椅、圍裙），不可留英文單字。
 如果問題是 credits：描述畫面本身，不要唸製作名單、贊助或商標。
 最多 {budget} 個中文字，使用繁體中文。只回覆改寫後的句子。
 原句：{line}"""

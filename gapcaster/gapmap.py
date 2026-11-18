@@ -2,11 +2,56 @@
 import re
 
 
-HALLUCINATIONS = {"you", "thank you", "thanks for watching", "bye", ""}
+_CJK = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+HALLUCINATIONS = {
+    "you", "thank you", "thanks for watching", "bye",
+    "謝謝觀看", "谢谢观看", "感謝收看", "感谢收看", "請訂閱", "请订阅",
+    "字幕由amaraorg社群提供", "",
+}
+# Known Whisper BGM watermark artefacts on Chinese/Mandarin music intros
+BGM_WATERMARK = re.compile(
+    r"^\s*(?:字幕(?:志願|志愿|愿|提供|組|组|製作|制作)?(?:者|員|员)?|字愿者)\s*[:：\-]?\s*(?:李宗盛)?|"
+    r"(?:優優|优优)(?:獨播劇場|独播剧场)|明鏡與點點|明镜与点点|amara\.?org",
+    re.I,
+)
 
 
 def _norm(t: str) -> str:
-    return re.sub(r"[^a-z0-9' ]", "", t.lower()).strip()
+    return re.sub(r"[^a-z0-9'\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff ]", "", t.lower()).strip()
+
+
+def filter_segment_words(seg_words, seg_text: str):
+    """Drop Whisper BGM watermark prefixes, stretched silence hallucinations, and music loops."""
+    compact = re.sub(r"\s+", "", _norm(seg_text))
+    if not compact or re.fullmatch(r"(.)\1{4,}", compact):
+        return []
+    raw = list(seg_words or [])
+    m = BGM_WATERMARK.search(seg_text or "")
+    if m and m.start() == 0:
+        remainder = re.sub(r"\s+", "", _norm((seg_text or "")[m.end():]))
+        if not remainder:
+            return []
+        kept_tail, acc = [], ""
+        for w in reversed(raw):
+            kept_tail.append(w)
+            acc = re.sub(r"\s+", "", _norm(w.get("word", ""))) + acc
+            if len(acc) >= len(remainder):
+                break
+        raw = list(reversed(kept_tail))
+    if len(raw) == 1:
+        dur0 = float(raw[0]["end"]) - float(raw[0]["start"])
+        p0 = float(raw[0].get("probability", 1.0))
+        if dur0 > 4.0 or (dur0 > 2.0 and p0 < 0.5):   # single-word Whisper phantom stretched across silence
+            return []
+    out = []
+    for w in raw:
+        s0, e0 = float(w["start"]), float(w["end"])
+        if e0 - s0 > 1.8:     # words after music/silence often absorb preceding silence; keep last 1.5 s
+            s0 = e0 - 1.5
+        if e0 - s0 > 0 and _norm(w.get("word", "")):
+            out.append({"w": w["word"].strip(), "start": s0, "end": e0,
+                        "p": float(w.get("probability", 1.0))})
+    return out
 
 
 def transcribe(audio_path, model: str, lang: str | None = "en"):
@@ -27,10 +72,7 @@ def transcribe(audio_path, model: str, lang: str | None = "en"):
         neighbours = [_norm(x.get("text", "")) for x in segs[max(0, i - 2): i + 3]]
         if lp < -1.0 and neighbours.count(t) >= 3:      # "I have. I have. I have." over music
             continue
-        for w in seg.get("words", []):
-            if w["end"] - w["start"] > 0:
-                words.append({"w": w["word"].strip(), "start": float(w["start"]), "end": float(w["end"]),
-                              "p": float(w.get("probability", 1.0))})
+        words.extend(filter_segment_words(seg.get("words", []), seg.get("text", "")))
     words.sort(key=lambda w: w["start"])
     return words, res.get("text", "")
 
@@ -92,7 +134,8 @@ def speech_spans(words, merge_pause: float):
     for w in words:
         if spans and w["start"] - spans[-1]["end"] < merge_pause:
             spans[-1]["end"] = max(spans[-1]["end"], w["end"])
-            spans[-1]["text"] += " " + w["w"]
+            sep = "" if (_CJK.search(spans[-1]["text"][-1:]) and _CJK.search(w["w"][:1])) else " "
+            spans[-1]["text"] += sep + w["w"]
         else:
             spans.append({"start": w["start"], "end": w["end"], "text": w["w"]})
     return spans

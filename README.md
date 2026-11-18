@@ -14,46 +14,50 @@ GapCaster Small drafts an audio-description (AD) track for a finished video. It 
 | Largest model core to the pipeline | 27B | **8B** |
 | Narration languages | English | English and **Mandarin (Traditional Chinese text, `--lang zh`)** |
 | Describer interface | Static `review.html` + CLI export | **Local Web Studio (`gapcaster web`, `127.0.0.1`)** with one-click browser export + static `review.html` |
-| Peak memory on the 2:20 test clip | 33.2 GB | **13.7 GB** (English, 8B) · **13.8 GB** (Mandarin, 8B) |
+| Peak memory on the 2:20 test clips | 33.2 GB | **13.7 GB** (EN, 8B) · **13.6–13.8 GB** (Mandarin, 8B) |
 
-## Results on small models (laptop, in-sample)
+## Results on small models (laptop, in-sample + held-out Taiwanese documentary)
 
-Measured on an Apple M5 Max laptop on *Tears of Steel* 0:00–2:20 (Blender Foundation, CC BY 3.0). This clip was also the development clip, so every number is in-sample; held-out films are the next measurement. The 27B column is the original GapCaster result, for comparison.
+Measured on an Apple M5 Max laptop across two 0:00–2:20 excerpts:
+- **In-sample development clip**: *Tears of Steel* (Blender Foundation, CC BY 3.0; English dialogue).
+- **Held-out native Taiwanese Mandarin documentary**: *Young Coffee Story* (《【Young Coffee Story】人物紀實短片》，台灣失智症協會 Taiwan Alzheimer's Disease Association / 觀賞故事, CC BY 3.0; Taiwanese Mandarin dialogue with burned-in bilingual open captions and slow cross-dissolves).
 
-| 0:00–2:20 | 27B, English (original) | **8B, English** | **8B, Mandarin** |
-|---|---:|---:|---:|
-| Lines that fit their silence | 17/17 | 19/19 | 15/15 |
-| Narration over detected speech | 0.0 s | 0.0 s | 0.0 s |
-| Narration over official subtitle cues | 0.4 s | 0.6 s | 0.4 s |
-| Verifier: obvious planted errors flagged | 17/17 | 18/19 | 13/15 |
-| Verifier: subtle in-film errors flagged | 15/17 | 13/19 (verb swaps 0/5) | 11/15 (character and neighbour swaps only) |
-| Verifier flags on unmodified lines | 1/17 | 2/19 | 1/15 |
-| AI-assisted frame check: accurate · minor · wrong | 13 · 4 · 0 | — | 7 · 7 · 1 |
-| Processing per content minute | 125 s | 50 s | 39 s |
-| Peak model memory | 33.2 GB | 13.7 GB | 13.8 GB |
+| 0:00–2:20 | 27B, EN (*ToS* ref) | **8B, EN (*ToS*)** | **8B, Mandarin (*ToS*)** | **8B, Mandarin (*Young Coffee*, held-out)** |
+|---|---:|---:|---:|---:|
+| Lines that fit their silence | 17/17 | 19/19 | 15/15 | **13/13** |
+| Narration over detected speech | 0.0 s | 0.0 s | 0.0 s | **0.0 s** |
+| Narration over official subtitle cues | 0.4 s | 0.6 s | 0.4 s | n/a (open-captioned source) |
+| Verifier: obvious planted errors flagged | 17/17 | 18/19 | 13/15 | **12/13** |
+| Verifier: subtle in-film errors flagged | 15/17 | 13/19 (verb swaps 0/5) | 11/15 (char/neighbour) | **12/13** (neighbour swaps) |
+| Verifier flags on unmodified lines | 1/17 | 2/19 | 1/15 | **3/13** (all 3 true dissolve-timing leads) |
+| AI-assisted frame check: accurate · minor · wrong | 13 · 4 · 0 | — | 7 · 7 · 1 | **6 · 5 · 2** |
+| Processing per content minute | 125 s | 50 s | 39 s | **39 s** |
+| Peak model memory | 33.2 GB | 13.7 GB | 13.8 GB | **13.6 GB** |
 
-What the numbers say: the 8B profile keeps the timing guarantees (every placed line fits; no narration over detected speech) at well under half the memory, but its descriptions are weaker. In the Mandarin run, one line in fifteen named the wrong character, and the verifier missed it. Describer review stays mandatory. Per-line notes are in [`eval/spotcheck_tears_of_steel_0-140_zh.csv`](eval/spotcheck_tears_of_steel_0-140_zh.csv), with one frame checked per line at its midpoint by an AI assistant. Human describer review and blind and low-vision listener ratings are the next step ([listening pilot](https://tedinroc.github.io/gapcaster/pilot/)).
+What the numbers say: across both an English sci-fi film and a held-out Taiwanese documentary, the 8B profile preserves every timing guarantee (100% of placed lines fit; `0.0 s` narration over detected speech) at ~13.6–13.8 GB peak memory. On *Young Coffee Story*, all three verifier flags on unmodified lines (`AD002`, `AD006`, `AD013`) were genuine catches where a slow cross-dissolve moved past or had not yet reached the action described—catching one of the two wrong lines (`AD002`) and leaving one unflagged error (`AD012`, a brief cycling-photo B-roll cut-in inside an interview shot) for the human describer to reject. Per-line notes are in [`eval/spotcheck_tears_of_steel_0-140_zh.csv`](eval/spotcheck_tears_of_steel_0-140_zh.csv) and [`eval/spotcheck_young_coffee_0-140_zh.csv`](eval/spotcheck_young_coffee_0-140_zh.csv). Human describer review and blind and low-vision listener ratings are underway ([listening pilot](https://tedinroc.github.io/gapcaster/pilot/)).
 
-Provenance: the 8B English sample ([`samples/tears-of-steel-0-140-8b`](samples/tears-of-steel-0-140-8b)) was produced by the original GapCaster code with `GAPCASTER_VLM` pointing at Qwen3-VL-8B. The Mandarin sample ([`samples/tears-of-steel-0-140-zh`](samples/tears-of-steel-0-140-zh)) was produced by this repository with `--lang zh --inject 20`.
+Provenance: the 8B English sample ([`samples/tears-of-steel-0-140-8b`](samples/tears-of-steel-0-140-8b)) was produced with `GAPCASTER_VLM` pointing at Qwen3-VL-8B. Both Mandarin samples ([`samples/tears-of-steel-0-140-zh`](samples/tears-of-steel-0-140-zh) and held-out [`samples/young-coffee-0-140-zh`](samples/young-coffee-0-140-zh)) were produced by this repository with `--lang zh --inject 20`.
 
-### Mandarin narration (`--lang zh`)
+### Mandarin narration & Taiwanese documentary adaptations (`--lang zh`)
 
 - Budget in characters, not words: ⌊window × 4.0 字/s⌋, from 4 to 40 characters. The default voice, Kokoro `zf_xiaobei`, speaks about 4.3 characters per second.
 - Narration is written and stored in Traditional Chinese with Taiwan phrasing (OpenCC `s2twp`). It is converted to Simplified only on the way into the TTS front end, whose Mandarin G2P expects Simplified characters.
-- Shot facts stay in English, where the vision model is most reliable. The writer reads them and writes in Mandarin.
-- The style gate has Mandarin rules: 我們看到／鏡頭 (camera language), 似乎／好像／可能 (speculation) and 我／我們 (first person) are hard blocks; emotion words, evaluative words and similes are flagged. Text read verbatim (「…」 or 字幕：…) is exempt.
+- Shot facts stay in English, where the vision model is most reliable. The writer reads them and writes in Mandarin; untranslated lowercase English common nouns leaked from the facts (e.g. *succulent*) are blocked by the deterministic Mandarin style gate and rewritten into Chinese (`多肉植物`), while on-screen proper names (`Young`) are exempt.
+- **Open-caption & BGM watermark guards for Taiwanese media:** almost all Taiwanese online/TV video burns open dialogue subtitles into the frame (`is_spoken_subtitle()` suppresses on-screen text that merely repeats surrounding ASR speech so dialogue is not read twice), and `filter_segment_words()` strips known Whisper Chinese BGM watermarks (`字幕志願者 李宗盛`, etc.) and single-word silence phantoms.
+- **Soft-dissolve subdivision:** documentary montages built with slow cross-dissolves rather than hard cuts are subdivided into ≤8 s windows in `scenes.shots()` so title cards and archival photos are not collapsed into a single shot.
+- The style gate has Mandarin rules: 我們看到／鏡頭 (camera language), 似乎／好像／可能 (speculation), 我／我們 (first person) and leaked English common nouns are hard blocks; emotion words, evaluative words and similes are flagged. Text read verbatim (「…」 or 字幕：…) is exempt.
 - A caption line written when no unread text is on screen is treated as a hallucinated reading: the writer is asked once for the visible action instead, otherwise the line is dropped.
-- The cast sheet carries Chinese names ([`configs/cast_tears_of_steel_zh.yaml`](configs/cast_tears_of_steel_zh.yaml)).
-- Known gaps: foreign on-screen text is sometimes read untranslated; Kokoro's Mandarin voice is a mainland-accent stock voice, and a Taiwanese voice is needed; the noun and verb planted-error sets need a Chinese part-of-speech tagger and are not run yet.
+- Cast sheets carry Chinese names and `named_from` timestamps ([`configs/cast_tears_of_steel_zh.yaml`](configs/cast_tears_of_steel_zh.yaml), [`configs/cast_young_coffee_zh.yaml`](configs/cast_young_coffee_zh.yaml)).
+- Known gaps: foreign title cards (`YOUNG COFFEE STORY`, `SIMULATION READY...`) are sometimes read in English rather than translated; Kokoro's Mandarin voice is a mainland-accent stock voice, and a Taiwanese voice is needed; short B-roll photo inserts inside a single sub-shot (`AD012`) can still be missed; noun/verb planted-error sets need a Chinese POS tagger.
 
 ```bash
-gapcaster run tears_of_steel_720p.mov --out runs/zh --cast configs/cast_tears_of_steel_zh.yaml \
-  --start 0 --end 140 --lang zh --ref-srt TOS-en.srt --inject 20
+gapcaster run young_coffee.mp4 --out runs/yc-zh --cast configs/cast_young_coffee_zh.yaml \
+  --start 0 --end 140 --lang zh --inject 20
 ```
 
 
 
-**Start here:** [Project page](https://tedinroc.github.io/gapcaster-small/) · [Watch the 8B English sample](samples/tears-of-steel-0-140-8b/clip_with_ad.mp4) · [Mandarin sample](samples/tears-of-steel-0-140-zh/) · [Listening pilot for blind and low-vision listeners](https://tedinroc.github.io/gapcaster/pilot/) · [Run locally](#quick-start)
+**Start here:** [Project page](https://tedinroc.github.io/gapcaster-small/) · [Native Taiwanese Mandarin sample (*Young Coffee Story*)](samples/young-coffee-0-140-zh/) · [Mandarin *Tears of Steel* sample](samples/tears-of-steel-0-140-zh/) · [8B English sample](samples/tears-of-steel-0-140-8b/clip_with_ad.mp4) · [Listening pilot for blind and low-vision listeners](https://tedinroc.github.io/gapcaster/pilot/) · [Run locally](#quick-start)
 
 Built by Ted Chen with AI coding assistance (Claude, Anthropic).
 
@@ -161,12 +165,12 @@ python eval/parity.py runs/demo                          # MLX vs OpenVINO/PyTor
 - The writer sees every shot in its silence, but a short line may finish before a later shot appears; in the full film 10 of 70 lines were written partly from such shots, and these account for about half the verifier's flags. Planned fix: rewrite a line from only the shots on screen while it plays.
 - The text gate forces one rewrite; a later shortening for time can still drop the text (two cases in the full film).
 - End-credit rolls slipped through the credits pattern in the full-film run; the pattern has since been extended.
-- Mandarin narration is new and has only been measured on one clip (see above).
+- Mandarin narration has been measured on two 140-second clips (*Tears of Steel* in-sample and *Young Coffee Story* held-out); full-length Taiwanese documentaries and listener comprehension studies are next.
 - Timings were measured on a laptop that was also running other jobs; they will be re-timed on an idle machine.
 
 ## Other hardware
 
-The orchestrator does not depend on Apple Silicon: the vision-language model can be served by any OpenAI-compatible server (for example vLLM on an Intel Arc or NVIDIA card), speech recognition can run on OpenVINO (CPU or GPU) and Kokoro on PyTorch (CPU or Intel XPU). The hardware study that targets a single 32 GB Intel Arc Pro B70 card is documented in the original [GapCaster repository](https://github.com/tedinroc/gapcaster#stage-ii-one-asus-ugen-intel-arc-pro-b70). Here the goal is the smallest machine that does the job well: the 8B profile's 14 GB peak should fit 24 GB laptops and 16 GB GPUs with 4-bit weights. That still has to be measured.
+The orchestrator does not depend on Apple Silicon: the vision-language model can be served by any OpenAI-compatible server (for example vLLM on an Intel Arc or NVIDIA card), speech recognition can run on OpenVINO (CPU or GPU) and Kokoro on PyTorch (CPU or Intel XPU). The hardware study that targets a single 32 GB Intel Arc Pro B70 card is documented in the original [GapCaster repository](https://github.com/tedinroc/gapcaster#stage-ii-one-asus-ugen-intel-arc-pro-b70). Here the goal is the smallest machine that does the job well: the 8B profile's ~14 GB peak should fit 24 GB laptops and 16 GB GPUs with 4-bit weights. That still has to be measured.
 
 ## Project layout
 
@@ -175,16 +179,18 @@ gapcaster/      pipeline: media, scenes, gapmap (Whisper MLX/OpenVINO + VAD), ll
                 backends), tts (MLX/PyTorch), lang, prompts, styleguard, inject, pipeline,
                 export, review, approve, web (local Describer Studio), cli
 eval/           parity check for the portable speech path; local OpenAI-compatible test server;
-                AI-assisted frame check
-configs/        cast sheets for the demo film (English and Mandarin)
-samples/        outputs of the 140-second demo runs (8B English, 8B Mandarin, 27B reference);
-                full-film script and metrics; portable-path metrics
+                AI-assisted frame checks (Tears of Steel + Young Coffee Story)
+configs/        cast sheets for Tears of Steel (EN/zh) and Young Coffee Story (zh)
+samples/        outputs of the 140-second demo runs (8B EN, 8B Mandarin Tears of Steel, 8B
+                Mandarin Young Coffee Story held-out, 27B reference); full-film script; metrics
 tests/          unit and HTTP studio tests (pytest)
 ```
 
 ## Credits and licences
 
 - Code: MIT, © 2026 Ted Chen. Developed with AI coding assistance (Claude, Anthropic; Gemini, Google).
-- Demo footage and frames: *Tears of Steel* © Blender Foundation | mango.blender.org, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). `samples/tears-of-steel-0-140*/clip_with_ad.mp4` are excerpts (0:00–2:20) with GapCaster's synthetic description track mixed in; they are modified works and are not endorsed by the Blender Foundation. Score by Joram Letwory (www.tearsofsteel.org), heard as part of the CC BY 3.0 film; the separately released soundtrack files are CC BY-ND 3.0 and are not used. Official subtitles are used only for evaluation.
+- Demo footage and frames:
+  - *Tears of Steel* © Blender Foundation | mango.blender.org, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). `samples/tears-of-steel-0-140*/clip_with_ad.mp4` are excerpts (0:00–2:20) with GapCaster's synthetic description track mixed in; they are modified works and are not endorsed by the Blender Foundation. Score by Joram Letwory (www.tearsofsteel.org), heard as part of the CC BY 3.0 film; the separately released soundtrack files are CC BY-ND 3.0 and are not used. Official subtitles are used only for evaluation.
+  - *Young Coffee Story* (《【Young Coffee Story】人物紀實短片_台灣失智症協會｜觀賞故事》, [YouTube `K3YuJ_aXPDQ`](https://www.youtube.com/watch?v=K3YuJ_aXPDQ)) © 台灣失智症協會 (Taiwan Alzheimer's Disease Association) / 觀賞故事, licensed under Creative Commons Attribution ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)). `samples/young-coffee-0-140-zh/clip_with_ad.mp4` is a 0:00–2:20 excerpt modified to mix in GapCaster Small's synthetic Mandarin audio-description draft and is not endorsed by the Taiwan Alzheimer's Disease Association.
 - Models: Qwen3-VL-8B-Instruct (Apache-2.0; default), Whisper large-v3-turbo (MIT), Silero VAD (MIT), Kokoro-82M (Apache-2.0), optional reference Qwen3.8-27B (Apache-2.0). Voices are synthetic stock voices; no voice cloning.
 - Libraries include MLX, mlx-vlm, mlx-audio, OpenVINO GenAI, PyTorch (BSD-3-Clause), PySceneDetect and spaCy. Kokoro's English G2P falls back to espeak-ng (GPL-3.0) for out-of-vocabulary words; the library comes in the espeakng-loader wheel that misaki[en] installs, is loaded at runtime, and is not redistributed by this repo. ffmpeg is called as a subprocess.

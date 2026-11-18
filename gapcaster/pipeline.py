@@ -30,7 +30,10 @@ def clean(reply: str, lang: str = "en") -> str:
     t = reply.rsplit("</think>", 1)[-1] if "</think>" in reply else reply
     if "<think>" in t:
         return ""
-    t = t.strip().strip('"').strip("「」").strip()
+    t = t.strip()
+    for oq, cq in [('"', '"'), ("「", "」"), ("“", "”")]:
+        if len(t) >= 2 and t.startswith(oq) and t.endswith(cq) and cq not in t[1:-1]:
+            t = t[1:-1].strip()
     if not t or re.fullmatch(r"skip\W*", t, re.I) or not L.has_content(t, lang):
         return ""
     if lang == "zh":
@@ -90,6 +93,22 @@ def dialogue_near(spans, t0, t1, before=True):
         return prev[-1]["text"][-160:] if prev else ""
     nxt = [s for s in spans if s["start"] >= t1 - 0.05]
     return nxt[0]["text"][:160] if nxt else ""
+
+
+def is_spoken_subtitle(text: str, spans, t0: float, t1: float, lang: str = "en") -> bool:
+    """True when on-screen text merely transcribes dialogue already heard around [t0, t1]
+    (common in open-captioned Taiwanese and Chinese video; AD guidelines skip open dialogue captions)."""
+    spoken = " ".join(x.get("text", "") for x in spans if gapmap.overlap(t0 - 3.5, t1 + 3.5, x["start"], x["end"]) > 0)
+    if not spoken.strip():
+        return False
+    if lang == "zh" or L.CJK.search(text):
+        t_trad, s_trad = L.to_traditional(text), L.to_traditional(spoken)
+        han_t = set(L.CJK.findall(t_trad))
+        han_s = set(L.CJK.findall(s_trad))
+        if len(han_t) >= 2 and len(han_t & han_s) / len(han_t) >= 0.5:
+            return True
+    cw_t, cw_s = styleguard.content_words(text, "en"), styleguard.content_words(spoken, "en")
+    return len(cw_t) >= 2 and len(cw_t & cw_s) / len(cw_t) >= 0.6
 
 
 def build_slots(gaps, shots, s: Settings):
@@ -178,8 +197,10 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
             facts = facts_text(by_id, slot["shots"])
             unread = []
             for i in slot.get("prev", []) + slot["shots"]:
-                t = str((by_id[i].get("facts") or {}).get("text", "") or "").strip()
-                if len(t) >= 3 and t.lower() not in read_text and not CREDITS.search(t):
+                sh_i = by_id[i]
+                t = str((sh_i.get("facts") or {}).get("text", "") or "").strip()
+                if (len(t) >= 3 and t.lower() not in read_text and not CREDITS.search(t)
+                        and not is_spoken_subtitle(t, spans, sh_i["start"], sh_i["end"], s.lang)):
                     unread.append(t[:90])
                     read_text.add(t.lower())
             text_note = ((("畫面上尚未唸出的文字（唸出與劇情相關的部分，外文請翻成中文）：" if s.lang == "zh" else

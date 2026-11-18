@@ -16,7 +16,8 @@ SWAPS = [("Thom", "Celia"), ("Celia", "Thom"), ("the sniper", "the old man"), ("
          ("The sniper", "The old man"), ("The old man", "The sniper"), (" man", " woman"), (" woman", " man")]
 # Mandarin: the same kinds of planted error, written in Traditional Chinese
 ADDS_ZH = ["，手裡拿著一把紅傘", "，天空下著大雨", "，身處擁擠的火車站", "。招牌寫著「出口」", "，身旁有一匹白馬"]
-SWAPS_ZH = [("湯姆", "席莉雅"), ("席莉雅", "湯姆"), ("狙擊手", "老人"), ("老人", "狙擊手"), ("男子", "女子"), ("女子", "男子")]
+SWAPS_ZH = [("湯姆", "席莉雅"), ("席莉雅", "湯姆"), ("狙擊手", "老人"), ("老人", "狙擊手"),
+            ("善仁", "鳳蓮"), ("鳳蓮", "善仁"), ("男子", "女子"), ("女子", "男子")]
 _nlp = None
 
 

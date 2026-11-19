@@ -27,6 +27,8 @@ class Settings:
     vlm_model: str = os.environ.get("GAPCASTER_VLM", "mlx-community/Qwen3.5-9B-8bit")
     tts_model: str = "mlx-community/Kokoro-82M-bf16"
     tts_voice: str = "af_heart"
+    tts_ref_audio: str = ""                  # optional reference wav for qwen3_tts (defaults to bundled Apache-2.0 zh-TW voice)
+    tts_ref_text: str = ""                   # optional reference transcript for qwen3_tts
     llm_backend: str = "mlx"        # "mlx" (in-process, Mac) or "openai" (any OpenAI-compatible server, e.g. vLLM on Arc Pro B70)
     llm_base_url: str = "http://127.0.0.1:8000/v1"
     llm_model_name: str = "qwen"             # must match vLLM --served-model-name
@@ -34,5 +36,5 @@ class Settings:
     asr_backend: str = "mlx"                 # "mlx" (mlx-whisper) or "openvino" (OpenVINO GenAI WhisperPipeline)
     asr_ov_model: str = os.environ.get("GAPCASTER_OV_WHISPER", "OpenVINO/whisper-large-v3-turbo-int8-ov")
     asr_device: str = "CPU"                  # OpenVINO device: CPU or GPU (Arc)
-    tts_backend: str = "mlx"                 # "avspeech" (macOS zh-TW neural), "mlx" (mlx-audio Kokoro), or "kokoro" (PyTorch CPU / XPU)
+    tts_backend: str = "mlx"                 # "qwen3_tts" (Apache-2.0 MLX zh-TW), "avspeech" (macOS fallback), "mlx" (Kokoro), or "kokoro" (CPU/XPU)
     extra: dict = field(default_factory=dict)

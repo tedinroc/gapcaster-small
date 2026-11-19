@@ -22,8 +22,8 @@
   "max_rewrites": 3,
   "whisper_model": "mlx-community/whisper-large-v3-turbo",
   "vlm_model": "a0093b9b5fda6f76ddd4a462c6830ae7c4fe47ec",
-  "tts_model": "mlx-community/Kokoro-82M-bf16",
-  "tts_voice": "zf_xiaobei",
+  "tts_model": "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-8bit",
+  "tts_voice": "tw_ref_female",
   "llm_backend": "mlx",
   "llm_base_url": "http://127.0.0.1:8000/v1",
   "llm_model_name": "qwen",
@@ -31,7 +31,7 @@
   "asr_backend": "mlx",
   "asr_ov_model": "OpenVINO/whisper-large-v3-turbo-int8-ov",
   "asr_device": "CPU",
-  "tts_backend": "mlx",
+  "tts_backend": "qwen3_tts",
   "extra": {}
  },
  "cast": [
@@ -853,7 +853,7 @@
    "window_end": 18.417,
    "avail": 7.07,
    "text": "四具引擎噴出粉白火光，煙霧翻滾。",
-   "duration": 3.44,
+   "duration": 3.71,
    "speed": 1.0,
    "budget_words": 28,
    "attempts": [
@@ -888,7 +888,7 @@
    "window_end": 22.44,
    "avail": 4.02,
    "text": "工業區中央射出強光，照亮灰濛天空。",
-   "duration": 3.85,
+   "duration": 3.58,
    "speed": 1.0,
    "budget_words": 16,
    "attempts": [
@@ -921,7 +921,7 @@
    "window_end": 49.72,
    "avail": 4.17,
    "text": "四十年後，霓虹燈閃爍",
-   "duration": 2.28,
+   "duration": 2.38,
    "speed": 1.0,
    "budget_words": 16,
    "attempts": [
@@ -965,7 +965,7 @@
    "window_end": 59.8,
    "avail": 5.85,
    "text": "字幕：SIMULATION READY...",
-   "duration": 1.36,
+   "duration": 2.14,
    "speed": 1.0,
    "budget_words": 23,
    "attempts": [
@@ -1001,7 +1001,7 @@
    "window_end": 69.917,
    "avail": 7.27,
    "text": "字幕：TEARS OF STEEL。",
-   "duration": 1.23,
+   "duration": 2.25,
    "speed": 1.0,
    "budget_words": 29,
    "attempts": [
@@ -1037,7 +1037,7 @@
    "window_end": 74.083,
    "avail": 4.17,
    "text": "巨大的機械結構壓住高樓與船桅",
-   "duration": 3.14,
+   "duration": 3.08,
    "speed": 1.0,
    "budget_words": 16,
    "attempts": [
@@ -1070,7 +1070,7 @@
    "window_end": 79.375,
    "avail": 5.29,
    "text": "席莉雅躺在地板上，兩盞蠟燭亮著。",
-   "duration": 3.28,
+   "duration": 3.35,
    "speed": 1.0,
    "budget_words": 21,
    "attempts": [
@@ -1103,8 +1103,8 @@
    "window_end": 82.125,
    "avail": 2.75,
    "text": "字幕：機械師製造殺人機器。",
-   "duration": 2.56,
-   "speed": 1.0,
+   "duration": 2.73,
+   "speed": 1.08,
    "budget_words": 11,
    "attempts": [
     {
@@ -1138,7 +1138,7 @@
    "window_end": 86.54,
    "avail": 3.81,
    "text": "狙擊手穩穩扣住槍機。",
-   "duration": 2.15,
+   "duration": 2.37,
    "speed": 1.0,
    "budget_words": 15,
    "attempts": [
@@ -1173,7 +1173,7 @@
    "window_end": 95.417,
    "avail": 3.0,
    "text": "狙擊手凝視前方，呼吸放緩。",
-   "duration": 2.78,
+   "duration": 2.71,
    "speed": 1.0,
    "budget_words": 12,
    "attempts": [
@@ -1213,8 +1213,8 @@
    "window_end": 98.208,
    "avail": 2.21,
    "text": "機械飛行器盤旋城上。",
-   "duration": 2.2,
-   "speed": 1.0,
+   "duration": 2.09,
+   "speed": 1.08,
    "budget_words": 8,
    "attempts": [
     {
@@ -1246,7 +1246,7 @@
    "window_end": 102.417,
    "avail": 3.42,
    "text": "老人靜躺床上，狙擊手低姿瞄準。",
-   "duration": 3.35,
+   "duration": 3.1,
    "speed": 1.0,
    "budget_words": 13,
    "attempts": [
@@ -1279,7 +1279,7 @@
    "window_end": 117.2,
    "avail": 14.05,
    "text": "蒸汽飛船盤旋城上，引擎噴煙，燈光閃爍。",
-   "duration": 4.25,
+   "duration": 4.21,
    "speed": 1.0,
    "budget_words": 40,
    "attempts": [
@@ -1313,7 +1313,7 @@
    "window_end": 130.68,
    "avail": 11.73,
    "text": "老人前傾身子，抬手比劃。狙擊手低姿瞄準不動。",
-   "duration": 4.69,
+   "duration": 4.71,
    "speed": 1.0,
    "budget_words": 40,
    "attempts": [
@@ -1349,7 +1349,7 @@
    "window_end": 135.86,
    "avail": 2.61,
    "text": "老人跪地，仰頭。",
-   "duration": 1.47,
+   "duration": 1.98,
    "speed": 1.0,
    "budget_words": 10,
    "attempts": [
@@ -1407,11 +1407,11 @@
   "fit_after_loop": 15,
   "mean_attempts": 1.2,
   "rewrites": 3,
-  "ad_seconds": 42.0,
+  "ad_seconds": 44.4,
   "ad_overlap_with_detected_dialogue_s": 0.0,
   "flagged_lines": 1,
   "unsupported_flags": 1,
-  "rescued_by_speed": 0,
+  "rescued_by_speed": 2,
   "rescued_by_rewrite": 1,
   "style_or_text_gate_rewrites": 2,
   "shots_covered": 19,
@@ -1435,8 +1435,10 @@
    "gen_tokens": 3258
   },
   "tts": {
-   "calls": 19,
-   "audio_seconds": 60.0
+   "calls": 17,
+   "audio_seconds": 49.9,
+   "voice": "qwen3-tts-1.7b:tw_ref_female",
+   "backend": "qwen3_tts"
   },
   "mlx_peak_memory_gb": 13.8,
   "reference_dialogue_cues": 14,

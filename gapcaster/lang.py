@@ -71,11 +71,18 @@ def to_traditional(text: str) -> str:
 _ZHU_WORDS = re.compile(
     r"(著名|著作|顯著|显著|執著|执著|名著|原著|專著|专著|土著|昭著|卓著|編著|编著|合著|譯著|译著|新著|巨著|論著|论著|著稱|著称|著述|著錄|著录)"
 )
+# Spoken Taiwanese Mandarin pronunciations that Simplified G2P / Mainland TTS otherwise reads differently.
+_TW_SPOKEN = (
+    ("露出", "漏出"),  # Taiwan colloquial lòu chū (vs Mainland lù chū)
+)
+_ALLCAPS_WORD = re.compile(r"\b[A-Z]{4,}\b")
+_ALLCAPS_STOP = re.compile(r"(?<=[A-Za-z]\s)\b(OF|IN|ON|AT|TO|BY|OR|AS|THE|AND|FOR)\b(?=\s[A-Za-z])")
 
 
 def for_tts(text: str, lang: str = "en", simplified: bool = True) -> str:
     """Text as the TTS front end should see it.
-    Simplified G2P front ends (Kokoro) get t2s + aspectual 著->着; native zh-TW front ends keep Traditional."""
+    Simplified G2P / Mainland-trained front ends (Kokoro, Qwen3-TTS) get t2s + aspectual 著->着 +
+    Taiwanese spoken pronunciation tweaks; native zh-TW front ends (avspeech) keep Traditional."""
     if lang == "zh":
         if simplified:
             text = _converter("t2s").convert(text)
@@ -90,8 +97,15 @@ def for_tts(text: str, lang: str = "en", simplified: bool = True) -> str:
                 text = _ZHU_WORDS.sub(_hold, text).replace("著", "着")
                 for k, v in kept.items():
                     text = text.replace(k, v)
+            for src, spoken in _TW_SPOKEN:
+                if src in text:
+                    text = text.replace(src, spoken)
+            # Title-case long ALL-CAPS English words (e.g. TEARS OF STEEL) so TTS speaks them instead of spelling letters
+            text = _ALLCAPS_WORD.sub(lambda m: m.group(0).capitalize(), text)
+            text = _ALLCAPS_STOP.sub(lambda m: m.group(1).lower(), text)
         # read the full-width quote marks as a short pause rather than skipping them
         text = text.replace("「", "，").replace("」", "，").replace("：", "，")
+        text = re.sub(r"\.{3,}|…+", "。", text)
         text = re.sub(r"，{2,}", "，", text)
         text = re.sub(r"，([。！？；])", r"\1", text)
         return text.strip("，")

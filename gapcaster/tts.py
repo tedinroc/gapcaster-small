@@ -1,12 +1,15 @@
 """Text-to-speech with real duration measurement.
 
-Three local offline runtimes:
-- "avspeech": macOS on-device neural AVSpeechSynthesizer (authentic Taiwanese Mandarin zh-TW, e.g. Siri Shufen / Meijia)
-- "mlx": Kokoro-82M (Apache-2.0) via mlx-audio on Apple Silicon
+Four local offline runtimes:
+- "qwen3_tts": Qwen3-TTS-12Hz-1.7B-Base-8bit (Apache-2.0) via mlx-audio with bundled Apache-2.0 Taiwanese Mandarin reference voice
+- "avspeech": macOS on-device neural AVSpeechSynthesizer (zh-TW fallback, e.g. Siri Shufen / Meijia)
+- "mlx": Kokoro-82M (Apache-2.0) via mlx-audio on Apple Silicon (English default)
 - "kokoro": Kokoro-82M (Apache-2.0) via PyTorch on CPU or Intel Arc XPU (Stage II)
 """
 import atexit
+import importlib.util
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -15,6 +18,10 @@ from pathlib import Path
 
 import numpy as np
 import soundfile as sf
+
+QWEN3_TTS_DEFAULT_MODEL = os.environ.get("GAPCASTER_QWEN3_TTS", "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-8bit")
+DEFAULT_TW_REF_AUDIO = Path(__file__).parent / "assets" / "tw_ref_female.wav"
+DEFAULT_TW_REF_TEXT = "在密码学中，加密是将明文资讯改变为难以读取的密文内容，使之不可读的方法。"
 
 
 _AVSPEECH_SWIFT = r"""import Foundation
@@ -110,20 +117,49 @@ def avspeech_available() -> bool:
     return sys.platform == "darwin" and shutil.which("swift") is not None
 
 
+def qwen3_tts_available() -> bool:
+    return importlib.util.find_spec("mlx_audio") is not None and DEFAULT_TW_REF_AUDIO.is_file()
+
+
+def default_tts_model(backend: str) -> str:
+    if backend == "qwen3_tts":
+        return QWEN3_TTS_DEFAULT_MODEL
+    return "mlx-community/Kokoro-82M-bf16"
+
+
 def resolve_tts(lang: str = "en", backend: str | None = None, voice: str | None = None) -> tuple[str, str]:
     """Choose TTS runtime and default voice for `lang`."""
     if not backend or backend == "auto":
-        backend = "avspeech" if (lang == "zh" and avspeech_available()) else "mlx"
+        if lang == "zh":
+            if qwen3_tts_available():
+                backend = "qwen3_tts"
+            elif avspeech_available():
+                backend = "avspeech"
+            else:
+                backend = "mlx"
+        else:
+            backend = "mlx"
     if not voice:
-        if backend == "avspeech":
+        if backend == "qwen3_tts":
+            voice = "tw_ref_female" if lang == "zh" else "default"
+        elif backend == "avspeech":
             voice = "zh-TW" if lang == "zh" else "en-US"
         else:
             voice = "zf_xiaobei" if lang == "zh" else "af_heart"
     return backend, voice
 
 
+def normalize_peak(a: np.ndarray, target: float = 0.62) -> np.ndarray:
+    a = np.asarray(a, dtype=np.float32).flatten()
+    if a.size == 0:
+        return a
+    peak = float(np.max(np.abs(a)))
+    return a * (target / peak) if peak > 1e-4 else a
+
+
 class TTS:
-    def __init__(self, model: str, voice: str, lang: str = "en", backend: str = "mlx", device: str | None = None):
+    def __init__(self, model: str, voice: str, lang: str = "en", backend: str = "mlx", device: str | None = None,
+                 ref_audio: str = "", ref_text: str = ""):
         self.voice, self.backend, self.lang = voice, backend, lang
         self.voice_id = voice
         self.needs_simplified = backend != "avspeech"
@@ -131,7 +167,32 @@ class TTS:
         self._proc = None
         self._tmpdir = None
         self._cache_1x: tuple[str, Path] | None = None
-        if backend == "avspeech":
+        self._ref_audio: str | None = None
+        self._ref_text: str = ""
+        if backend == "qwen3_tts":
+            from mlx_audio.tts.utils import load_model
+            self.model_id = model if (model and "kokoro" not in model.lower()) else QWEN3_TTS_DEFAULT_MODEL
+            ref_path: Path | None = None
+            if ref_audio:
+                ref_path = Path(ref_audio)
+            elif voice and Path(voice).is_file():
+                ref_path = Path(voice)
+            elif lang == "zh" and DEFAULT_TW_REF_AUDIO.is_file():
+                ref_path = DEFAULT_TW_REF_AUDIO
+            if ref_path is not None and ref_path.is_file():
+                self._ref_audio = str(ref_path)
+                if ref_text:
+                    self._ref_text = ref_text
+                elif ref_path.resolve() == DEFAULT_TW_REF_AUDIO.resolve():
+                    self._ref_text = DEFAULT_TW_REF_TEXT
+                self.voice_id = f"qwen3-tts-1.7b:{ref_path.stem}"
+            else:
+                self.voice_id = "qwen3-tts-1.7b"
+            self._tmpdir = tempfile.TemporaryDirectory(prefix="gapcaster_qwen3tts_")
+            atexit.register(self.close)
+            self.model = load_model(self.model_id)
+            self.sr = int(getattr(self.model, "sample_rate", 24000))
+        elif backend == "avspeech":
             if not avspeech_available():
                 raise RuntimeError("avspeech TTS backend requires macOS with `swift` installed")
             self._tmpdir = tempfile.TemporaryDirectory(prefix="gapcaster_avspeech_")
@@ -161,7 +222,12 @@ class TTS:
             self.sr = self.model.sample_rate
         self.calls = 0
         self.audio_seconds = 0.0
-        self.synth("準備。" if (lang == "zh" and backend == "avspeech") else "Ready.")
+        if lang == "zh" and backend == "avspeech":
+            self.synth("準備。")
+        elif lang == "zh" and backend == "qwen3_tts":
+            self.synth("准备。")
+        else:
+            self.synth("Ready.")
 
     def close(self):
         if self._proc is not None:
@@ -210,7 +276,44 @@ class TTS:
         a, _ = sf.read(src_wav, dtype="float32")
         return np.asarray(a, dtype=np.float32)
 
+    def _synth_qwen3_tts(self, text: str, speed: float) -> np.ndarray:
+        assert self._tmpdir is not None
+        tmp = Path(self._tmpdir.name)
+        if self._cache_1x is None or self._cache_1x[0] != text:
+            base_24k = tmp / "qwen3_base.wav"
+            max_ok = max(12.0, len(text) * 0.75 + 4.0)
+            best = np.zeros(1, dtype=np.float32)
+            for temp, top_p in ((0.3, 0.8), (0.2, 0.75)):
+                kw = {"text": text, "lang_code": "zh" if self.lang == "zh" else "auto",
+                      "temperature": temp, "top_p": top_p}
+                if self._ref_audio:
+                    kw["ref_audio"] = self._ref_audio
+                    if self._ref_text:
+                        kw["ref_text"] = self._ref_text
+                chunks = [np.array(r.audio, dtype=np.float32) for r in self.model.generate(**kw)]
+                cand = np.concatenate(chunks) if chunks else np.zeros(1, dtype=np.float32)
+                cand = normalize_peak(trim(cand, self.sr, thresh=0.008), target=0.62)
+                dur = len(cand) / self.sr
+                best = cand
+                if 0.15 <= dur <= max_ok:
+                    break
+            sf.write(base_24k, best, self.sr)
+            self._cache_1x = (text, base_24k)
+        src_wav = self._cache_1x[1]
+        if abs(speed - 1.0) > 1e-3:
+            sp_wav = tmp / "qwen3_speed.wav"
+            subprocess.run(
+                ["ffmpeg", "-nostdin", "-y", "-loglevel", "error", "-i", str(src_wav),
+                 "-af", f"atempo={speed:.4f}", "-ar", str(self.sr), "-ac", "1", str(sp_wav)],
+                check=True,
+            )
+            src_wav = sp_wav
+        a, _ = sf.read(src_wav, dtype="float32")
+        return np.asarray(a, dtype=np.float32)
+
     def _generate(self, text, speed):
+        if self.backend == "qwen3_tts":
+            return [self._synth_qwen3_tts(text, speed)]
         if self.backend == "avspeech":
             return [self._synth_avspeech(text, speed)]
         if self.backend == "kokoro":

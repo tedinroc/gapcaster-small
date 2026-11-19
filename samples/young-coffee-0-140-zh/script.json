@@ -22,8 +22,8 @@
   "max_rewrites": 3,
   "whisper_model": "mlx-community/whisper-large-v3-turbo",
   "vlm_model": "a0093b9b5fda6f76ddd4a462c6830ae7c4fe47ec",
-  "tts_model": "mlx-community/Kokoro-82M-bf16",
-  "tts_voice": "zf_xiaobei",
+  "tts_model": "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-8bit",
+  "tts_voice": "tw_ref_female",
   "llm_backend": "mlx",
   "llm_base_url": "http://127.0.0.1:8000/v1",
   "llm_model_name": "qwen",
@@ -31,7 +31,7 @@
   "asr_backend": "mlx",
   "asr_ov_model": "OpenVINO/whisper-large-v3-turbo-int8-ov",
   "asr_device": "CPU",
-  "tts_backend": "mlx",
+  "tts_backend": "qwen3_tts",
   "extra": {}
  },
  "cast": [
@@ -862,7 +862,7 @@
    "window_end": 3.3,
    "avail": 3.0,
    "text": "年輕失智者獻上一杯",
-   "duration": 2.17,
+   "duration": 1.97,
    "speed": 1.0,
    "budget_words": 12,
    "attempts": [
@@ -905,7 +905,7 @@
    "window_end": 7.904,
    "avail": 3.55,
    "text": "老先生遞出一杯咖啡，微笑。",
-   "duration": 2.61,
+   "duration": 2.48,
    "speed": 1.0,
    "budget_words": 14,
    "attempts": [
@@ -943,7 +943,7 @@
    "window_end": 15.808,
    "avail": 7.9,
    "text": "字幕：YOUNG COFFEE STORY。",
-   "duration": 1.41,
+   "duration": 2.3,
    "speed": 1.0,
    "budget_words": 31,
    "attempts": [
@@ -978,7 +978,7 @@
    "window_end": 19.04,
    "avail": 3.23,
    "text": "字幕：是咖啡裡的故事。",
-   "duration": 2.02,
+   "duration": 2.38,
    "speed": 1.0,
    "budget_words": 12,
    "attempts": [
@@ -1013,7 +1013,7 @@
    "window_end": 31.617,
    "avail": 5.07,
    "text": "鳳蓮比出和平手勢，微笑。",
-   "duration": 2.47,
+   "duration": 2.48,
    "speed": 1.0,
    "budget_words": 20,
    "attempts": [
@@ -1048,7 +1048,7 @@
    "window_end": 40.38,
    "avail": 8.76,
    "text": "鳳蓮舉右手比出和平手勢，嘴角微揚。",
-   "duration": 3.69,
+   "duration": 3.52,
    "speed": 1.0,
    "budget_words": 35,
    "attempts": [
@@ -1087,8 +1087,8 @@
    "window_end": 76.189,
    "avail": 4.54,
    "text": "善仁大哥穿白圍裙，橙色繫帶，圍裙印「失智症」字樣。",
-   "duration": 4.47,
-   "speed": 1.15,
+   "duration": 4.44,
+   "speed": 1.22,
    "budget_words": 18,
    "attempts": [
     {
@@ -1123,7 +1123,7 @@
    "window_end": 82.667,
    "avail": 5.75,
    "text": "樣書擺在玻璃櫃，寫著翻轉失智友善咖啡。",
-   "duration": 4.24,
+   "duration": 4.39,
    "speed": 1.0,
    "budget_words": 23,
    "attempts": [
@@ -1159,7 +1159,7 @@
    "window_end": 86.4,
    "avail": 3.73,
    "text": "四盆多肉植物排成一列。",
-   "duration": 2.18,
+   "duration": 2.3,
    "speed": 1.0,
    "budget_words": 14,
    "attempts": [
@@ -1192,7 +1192,7 @@
    "window_end": 89.14,
    "avail": 2.74,
    "text": "字幕：Young。",
-   "duration": 0.91,
+   "duration": 1.34,
    "speed": 1.0,
    "budget_words": 10,
    "attempts": [
@@ -1227,8 +1227,8 @@
    "window_end": 100.94,
    "avail": 1.29,
    "text": "老伯門口戴帽",
-   "duration": 1.27,
-   "speed": 1.15,
+   "duration": 1.28,
+   "speed": 1.08,
    "budget_words": 5,
    "attempts": [
     {
@@ -1281,7 +1281,7 @@
    "window_end": 109.06,
    "avail": 2.01,
    "text": "鳳蓮笑著說。",
-   "duration": 1.39,
+   "duration": 1.24,
    "speed": 1.0,
    "budget_words": 8,
    "attempts": [
@@ -1316,7 +1316,7 @@
    "window_end": 139.8,
    "avail": 6.69,
    "text": "鳳蓮幫善仁整理外套。",
-   "duration": 2.1,
+   "duration": 2.01,
    "speed": 1.0,
    "budget_words": 26,
    "attempts": [
@@ -1369,7 +1369,7 @@
   "fit_after_loop": 13,
   "mean_attempts": 1.31,
   "rewrites": 4,
-  "ad_seconds": 30.9,
+  "ad_seconds": 32.1,
   "ad_overlap_with_detected_dialogue_s": 0.0,
   "flagged_lines": 3,
   "unsupported_flags": 3,
@@ -1397,8 +1397,10 @@
    "gen_tokens": 3356
   },
   "tts": {
-   "calls": 30,
-   "audio_seconds": 73.4
+   "calls": 18,
+   "audio_seconds": 54.9,
+   "voice": "qwen3-tts-1.7b:tw_ref_female",
+   "backend": "qwen3_tts"
   },
   "mlx_peak_memory_gb": 13.6,
   "injected_error_test": {

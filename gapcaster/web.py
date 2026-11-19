@@ -470,9 +470,10 @@ def make_handler(state: StudioState):
                         with state.lock:
                             job["logs"].append(str(msg))
                     try:
-                        from .tts import resolve_tts
+                        from .tts import default_tts_model, resolve_tts
                         tts_backend, tts_voice = resolve_tts(lang)
-                        s = Settings(lang=lang, tts_backend=tts_backend, tts_voice=tts_voice)
+                        s = Settings(lang=lang, tts_backend=tts_backend, tts_model=default_tts_model(tts_backend),
+                                     tts_voice=tts_voice)
                         if state.runner:
                             state.runner(vid_path, out_dir, start_s, end_s, cast_path, s, _log)
                         else:

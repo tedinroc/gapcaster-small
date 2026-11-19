@@ -12,7 +12,7 @@ import soundfile as sf
 from . import export, media
 from .config import Settings
 from .lang import for_tts
-from .tts import TTS
+from .tts import TTS, default_tts_model
 
 
 def apply(run_dir, approved_path, settings: Settings | None = None, tts_backend: str | None = None,
@@ -21,9 +21,11 @@ def apply(run_dir, approved_path, settings: Settings | None = None, tts_backend:
     doc = json.loads((run / "script.json").read_text())
     rec = doc.get("settings", {})
     # re-time edits with the same voice and runtime the run used, unless told otherwise
+    eff_backend = tts_backend or rec.get("tts_backend", "mlx")
+    eff_model = default_tts_model(eff_backend) if tts_backend else rec.get("tts_model", default_tts_model(eff_backend))
     s = settings or Settings(lang=rec.get("lang", "en"), tts_voice=rec.get("tts_voice", Settings.tts_voice),
-                             tts_model=rec.get("tts_model", Settings.tts_model),
-                             tts_backend=tts_backend or rec.get("tts_backend", "mlx"),
+                             tts_model=eff_model,
+                             tts_backend=eff_backend,
                              speeds=tuple(rec.get("speeds", Settings.speeds)))
     decisions = {d["id"]: d for d in json.loads(Path(approved_path).read_text())["lines"]}
     tts, kept, report = None, [], []
@@ -43,7 +45,8 @@ def apply(run_dir, approved_path, settings: Settings | None = None, tts_backend:
             continue
         line = dict(r, review=status)
         if needs_voice:
-            tts = tts or TTS(s.tts_model, s.tts_voice, s.lang, backend=s.tts_backend)
+            tts = tts or TTS(s.tts_model, s.tts_voice, s.lang, backend=s.tts_backend,
+                             ref_audio=s.tts_ref_audio, ref_text=s.tts_ref_text)
             text, fit, dur = new_text or r["text"], None, 0.0
             for sp in s.speeds:
                 a, dur = tts.synth(for_tts(text, s.lang, simplified=tts.needs_simplified), sp)

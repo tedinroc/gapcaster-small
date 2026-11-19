@@ -202,7 +202,8 @@ def run(video, out_dir, start=0.0, end=None, cast_path=None, ref_srt=None, setti
 
     with T("load_models"):
         model = llm.make(s)
-        tts = TTS(s.tts_model, s.tts_voice, s.lang, backend=s.tts_backend)
+        tts = TTS(s.tts_model, s.tts_voice, s.lang, backend=s.tts_backend,
+                  ref_audio=s.tts_ref_audio, ref_text=s.tts_ref_text)
 
     by_id = {sh["id"]: sh for sh in shot_list}
     with T("shot_facts"):

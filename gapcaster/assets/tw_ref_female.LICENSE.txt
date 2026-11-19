@@ -1,0 +1,4 @@
+Reference audio: tw_ref_female.wav
+Source: MediaTek-Research/BreezyVoice (data/example.wav), trimmed to 0.70-8.95s, resampled to 24 kHz mono PCM16 at 1.12x tempo (~7.38s) to match audio-description pacing.
+Transcript: 在密碼學中，加密是將明文資訊改變為難以讀取的密文內容，使之不可讀的方法。
+License: Apache License 2.0 (https://github.com/mtkresearch/BreezyVoice / https://huggingface.co/MediaTek-Research/BreezyVoice-300M)

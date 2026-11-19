@@ -22,8 +22,8 @@
   "max_rewrites": 3,
   "whisper_model": "mlx-community/whisper-large-v3-turbo",
   "vlm_model": "mlx-community/Qwen3.5-9B-8bit",
-  "tts_model": "mlx-community/Kokoro-82M-bf16",
-  "tts_voice": "zh-TW",
+  "tts_model": "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-8bit",
+  "tts_voice": "tw_ref_female",
   "llm_backend": "mlx",
   "llm_base_url": "http://127.0.0.1:8000/v1",
   "llm_model_name": "qwen",
@@ -31,7 +31,7 @@
   "asr_backend": "mlx",
   "asr_ov_model": "OpenVINO/whisper-large-v3-turbo-int8-ov",
   "asr_device": "CPU",
-  "tts_backend": "avspeech",
+  "tts_backend": "qwen3_tts",
   "extra": {}
  },
  "cast": [],
@@ -835,7 +835,7 @@
    "window_end": 4.546,
    "avail": 4.25,
    "text": "穿灰衫戴金十字架者立沙灘。",
-   "duration": 3.1,
+   "duration": 2.96,
    "speed": 1.0,
    "budget_words": 16,
    "attempts": [
@@ -876,7 +876,7 @@
    "window_end": 7.716,
    "avail": 3.17,
    "text": "灰天海灘浪打濕沙。",
-   "duration": 1.79,
+   "duration": 2.28,
    "speed": 1.0,
    "budget_words": 12,
    "attempts": [
@@ -910,7 +910,7 @@
    "window_end": 15.307,
    "avail": 5.09,
    "text": "黑髮灰衫男看右再望下。",
-   "duration": 2.25,
+   "duration": 2.54,
    "speed": 1.0,
    "budget_words": 20,
    "attempts": [
@@ -944,7 +944,7 @@
    "window_end": 20.52,
    "avail": 5.21,
    "text": "灰衫男胸前白字與金十字架項鍊。",
-   "duration": 3.3,
+   "duration": 3.23,
    "speed": 1.0,
    "budget_words": 20,
    "attempts": [
@@ -978,7 +978,7 @@
    "window_end": 41.792,
    "avail": 5.38,
    "text": "灰衫男觸碰項鍊再望遠處。",
-   "duration": 2.66,
+   "duration": 2.53,
    "speed": 1.0,
    "budget_words": 21,
    "attempts": [
@@ -1012,7 +1012,7 @@
    "window_end": 48.4,
    "avail": 6.61,
    "text": "灰衫男靜立海灘，海平線遠處有船。",
-   "duration": 3.9,
+   "duration": 3.56,
    "speed": 1.0,
    "budget_words": 26,
    "attempts": [
@@ -1051,7 +1051,7 @@
    "window_end": 62.604,
    "avail": 8.15,
    "text": "灰衫男開啟木門。",
-   "duration": 1.82,
+   "duration": 1.6,
    "speed": 1.0,
    "budget_words": 32,
    "attempts": [
@@ -1087,7 +1087,7 @@
    "window_end": 69.528,
    "avail": 6.92,
    "text": "灰衫男的手放在大型深色長方物體頂端。",
-   "duration": 3.5,
+   "duration": 3.63,
    "speed": 1.0,
    "budget_words": 27,
    "attempts": [
@@ -1125,7 +1125,7 @@
    "window_end": 73.448,
    "avail": 3.92,
    "text": "雙手放於深色木桌邊緣。",
-   "duration": 2.79,
+   "duration": 2.24,
    "speed": 1.0,
    "budget_words": 15,
    "attempts": [
@@ -1161,7 +1161,7 @@
    "window_end": 80.935,
    "avail": 7.49,
    "text": "木櫃內有「白城堡」字樣的圓鐵盒。",
-   "duration": 3.73,
+   "duration": 3.64,
    "speed": 1.0,
    "budget_words": 29,
    "attempts": [
@@ -1197,7 +1197,7 @@
    "window_end": 101.852,
    "avail": 6.72,
    "text": "雙手掰開圓鐵盒蓋子。",
-   "duration": 2.13,
+   "duration": 1.98,
    "speed": 1.0,
    "budget_words": 26,
    "attempts": [
@@ -1231,7 +1231,7 @@
    "window_end": 106.836,
    "avail": 4.98,
    "text": "一手持圓鐵盒，一手拿深色藥排。",
-   "duration": 3.58,
+   "duration": 3.34,
    "speed": 1.0,
    "budget_words": 19,
    "attempts": [
@@ -1267,7 +1267,7 @@
    "window_end": 113.4,
    "avail": 6.56,
    "text": "手拿出白包，露出紅繩綁的紅方塊。",
-   "duration": 3.55,
+   "duration": 3.27,
    "speed": 1.0,
    "budget_words": 26,
    "attempts": [
@@ -1308,7 +1308,7 @@
    "window_end": 122.623,
    "avail": 5.59,
    "text": "白衣男子低頭，手中捧著紅方塊。",
-   "duration": 3.32,
+   "duration": 3.02,
    "speed": 1.0,
    "budget_words": 22,
    "attempts": [
@@ -1342,8 +1342,8 @@
    "window_end": 125.459,
    "avail": 2.84,
    "text": "手捧紅牌寫白拱沙天屯宮媽祖。",
-   "duration": 2.69,
-   "speed": 1.08,
+   "duration": 2.8,
+   "speed": 1.25,
    "budget_words": 11,
    "attempts": [
     {
@@ -1389,7 +1389,7 @@
    "window_end": 138.28,
    "avail": 5.61,
    "text": "白衣男子側臉凝望，手放鍵盤滑鼠。",
-   "duration": 3.84,
+   "duration": 3.33,
    "speed": 1.0,
    "budget_words": 22,
    "attempts": [
@@ -1440,7 +1440,7 @@
   "fit_after_loop": 16,
   "mean_attempts": 1.12,
   "rewrites": 2,
-  "ad_seconds": 48.0,
+  "ad_seconds": 46.0,
   "ad_overlap_with_detected_dialogue_s": 0.0,
   "flagged_lines": 6,
   "unsupported_flags": 5,
@@ -1468,10 +1468,10 @@
    "gen_tokens": 3304
   },
   "tts": {
-   "calls": 24,
-   "audio_seconds": 76.8,
-   "voice": "com.apple.ttsbundle.gryphon-neural_Shufen_zh-TW_premium",
-   "backend": "avspeech"
+   "calls": 20,
+   "audio_seconds": 58.6,
+   "voice": "qwen3-tts-1.7b:tw_ref_female",
+   "backend": "qwen3_tts"
   },
   "mlx_peak_memory_gb": 13.1,
   "injected_error_test": {

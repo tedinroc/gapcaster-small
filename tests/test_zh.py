@@ -27,7 +27,25 @@ def test_traditional_and_tts_conversion():
     assert L.for_tts("鐵盒上寫著「白城堡奶油餅乾」。", "zh") == "铁盒上写着，白城堡奶油饼干。"
     assert L.for_tts("著名作家拿著原著。", "zh") == "著名作家拿着原著。"
     assert L.for_tts("鐵盒上寫著「白城堡奶油餅乾」。", "zh", simplified=False) == "鐵盒上寫著，白城堡奶油餅乾。"
+    assert L.for_tts("手拿出白包，露出紅繩綁的紅方塊。", "zh") == "手拿出白包，漏出红绳绑的红方块。"
+    assert L.for_tts("字幕：TEARS OF STEEL。", "zh") == "字幕，Tears of Steel。"
+    assert L.for_tts("字幕：SIMULATION READY...", "zh") == "字幕，Simulation Ready。"
     assert L.for_tts("Forty years later.", "en") == "Forty years later."
+
+
+def test_qwen3_tts_defaults_and_asset():
+    import numpy as np
+    from gapcaster import tts as T
+    assert T.DEFAULT_TW_REF_AUDIO.is_file()
+    assert T.DEFAULT_TW_REF_AUDIO.stat().st_size > 100_000
+    assert T.default_tts_model("qwen3_tts").endswith("Qwen3-TTS-12Hz-1.7B-Base-8bit")
+    assert T.default_tts_model("mlx") == "mlx-community/Kokoro-82M-bf16"
+    b, v = T.resolve_tts("zh", "qwen3_tts", None)
+    assert (b, v) == ("qwen3_tts", "tw_ref_female")
+    b_en, v_en = T.resolve_tts("en", "auto", None)
+    assert (b_en, v_en) == ("mlx", "af_heart")
+    normed = T.normalize_peak(np.array([0.0, 0.25, -0.5], dtype=np.float32), target=0.62)
+    assert abs(float(np.max(np.abs(normed))) - 0.62) < 1e-4
 
 
 def test_zh_hard_rules():
